@@ -1,12 +1,9 @@
 #include "graph.h"
 #include <vector>
 
-//const int Graph::start = 2;
-//const int Graph::stop = 5;
-
 using namespace std;
 
-bool Graph::addConnection(Node* a, Node* b, int distance, int directionAB)
+bool Graph::addConnection(Node* a, Node* b, float distance, int directionAB)
 {
 	if (!a || !b || directionAB < 0 || directionAB >= 360)
 		return 0;
@@ -14,8 +11,6 @@ bool Graph::addConnection(Node* a, Node* b, int distance, int directionAB)
     b->connections.push_back(gConn(a, distance, (directionAB + 180)%360));
 	return 1;
 }
-
-
 
 Node* Graph::searchFor(int id)
 {
@@ -25,6 +20,13 @@ Node* Graph::searchFor(int id)
 			return (*i);
     }
     return 0;
+}
+
+Node* Graph::addNode()
+{
+	Node *node = new Node(nodeList.size());
+	nodeList.push_back(node);
+	return node;
 }
 
 list<Node*> Graph::getPath(Node* start, Node* stop)

@@ -13,7 +13,7 @@ class Node;
 class gConn
 {
 public:
-	gConn(Node* dest, int cost, int direction)
+	gConn(Node* dest, float cost, int direction)
     {
         this->dest = dest;
         this->cost = cost;
@@ -21,7 +21,7 @@ public:
     }
 
     Node* dest; // węzeł docelowy
-    int cost;   // koszt (droga w metrach)    
+    float cost;   // koszt (droga w metrach)    
 
 	// kat tak jak w pattern.h
 	int direction; // kierunek połączenia

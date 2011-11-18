@@ -13,7 +13,8 @@ public:
     Graph() { connectionNumber = 0; }
 
     Node* searchFor(int id);    // szuka elementu a o danym id
-	bool addConnection(Node* a, Node* b, int distance, int directionAB);  // dodaje połączenie między dwoma elementami
+	bool addConnection(Node* a, Node* b, float distance, int directionAB);  // dodaje połączenie między dwoma elementami
+	Node* addNode();
 	list<Node*> getPath(Node* start, Node* stop);	//znajduje najkrótszą ścieżkę start -> stop
 
 	list<Node*> nodeList;		// lista wierzchołków

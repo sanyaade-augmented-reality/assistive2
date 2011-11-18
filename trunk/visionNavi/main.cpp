@@ -43,10 +43,10 @@ string          patt_name[2];
 
 Graph graph;	//graf
 
-class sceneItem
+class SceneItem
 {
 public:
-	sceneItem(Pattern* pattern) : pattern(pattern) {};
+	SceneItem(Pattern* pattern) : pattern(pattern) {};
 	Pattern *pattern;
 	TransMatrix camTrans;
 };
@@ -58,7 +58,7 @@ static void   init();
 static void   cleanup();
 static void   keyEvent( unsigned char key, int x, int y);
 static void   mainLoop();
-static void	  draw( list<sceneItem> &scene );
+static void	  draw( list<SceneItem> &scene );
 
 int main(int argc, char **argv)
 {
@@ -79,26 +79,20 @@ static void init( void )
 	// zestaw testowy:
 	//   N - w strone obserwatora, hiro po lewej od kanji
 	//     
-	//   hiro(A) ------------> kanji(B)
+	//   kanji(B) ------------>  hiro(A)
 	//   dirA=0,  dirAB = 90 (bo oœ Z do obserwatora),   dirB = 0
 
-	Pattern *hiro = new Pattern("Data/patt.hiro\0", 0);
-	hiro->distance = 0.5;
-	Node* aNode = new Node(0);
-	hiro->node = aNode;
+	Node* aNode = graph.addNode();
+	Pattern *hiro = new Pattern("Data/patt.hiro\0", aNode, 0.5, 0);
 	patternList.push_back(hiro);
-	graph.nodeList.push_back(aNode);
-	graph.nodeList.back()->patterns.push_back(hiro);
+	aNode->patterns.push_back(hiro);
 	
-	Pattern *kanji = new Pattern("Data/patt.kanji\0", 0);	
-	kanji->distance = 0.5;
-	Node* bNode = new Node(1);
-	kanji->node = bNode;
+	Node* bNode = graph.addNode();
+	Pattern *kanji = new Pattern("Data/patt.kanji\0", bNode, 0.5, 0);	
 	patternList.push_back(kanji);
-	graph.nodeList.push_back(bNode);
-	graph.nodeList.back()->patterns.push_back(kanji);
+	bNode->patterns.push_back(kanji);
 	
-	graph.addConnection(aNode, bNode, 0.5, 0); 
+	graph.addConnection(aNode, bNode, 0.5, 90);
 	// -------------------------------------
 	
     // open the video path
@@ -154,7 +148,7 @@ static void mainLoop(void)
 {
     ARUint8         *dataPtr; // obraz
     ARMarkerInfo    *markerInfo;
-	ARMarkerInfo    *markerInfo_t[10];
+//	ARMarkerInfo    *markerInfo_t[10];
     int             marker_num;
 
     // grab a vide frame
@@ -174,16 +168,9 @@ static void mainLoop(void)
         exit(0);
     }
 
-	// debug ------
-	for (int j = 0; j < marker_num; j++ ) 
-	{
-		markerInfo_t[j] = &markerInfo[j];
-	}
-	// ------------
-
     arVideoCapNext();
 
-	std::list<sceneItem> scene;
+	std::list<SceneItem> scene;
     // check for object visibility
 	for (list<Node*>::iterator node = graph.nodeList.begin() ; node != graph.nodeList.end(); node++ )
 	{
@@ -201,7 +188,7 @@ static void mainLoop(void)
 			if ((*pat)->markerInfo)
 			{
 				// dodaje wzor
-				scene.push_back(sceneItem(*pat));
+				scene.push_back(SceneItem(*pat));
 				// liczy transformacje pomiedzy markerem a kamera
 				arGetTransMat(scene.back().pattern->markerInfo, scene.back().pattern->center, scene.back().pattern->width, scene.back().pattern->transformation);
 				arUtilMatInv(scene.back().pattern->transformation, scene.back().camTrans.m);
@@ -226,30 +213,26 @@ static void mainLoop(void)
 	Node* currentNode = closestPat->node;
 	// jesli widac ich kilka to ewentualnie zweryfikowac pozycje
 
-	// macierz Node(aktualny) -> marker
-	TransMatrix node2marker = TransMatrix(closestPat->direction, closestPat->distance);
-	// macierz currNode -> cel
-	TransMatrix node2aim = TransMatrix(currentNode->connections.front().direction, currentNode->connections.front().cost);
-
-	// macierz user -> aim
+	TransMatrix node2marker = TransMatrix(*closestPat);
 	TransMatrix marker2user = scene.begin()->camTrans;
 	TransMatrix node2user = node2marker*marker2user;
-	TransMatrix node2userInv = node2user.inverse();
-	// node2aim = 
-	TransMatrix user2aim = node2userInv*node2aim;
+
+	TransMatrix node2aim = TransMatrix(currentNode->connections.front());
+
+	TransMatrix user2aim = node2user.inverse()*node2aim;
 	
 	// wyci¹gn¹æ k¹ty
 	printf("kierunek celu: %f3.3, odl: %f3.2\n", user2aim.getYAngle(), user2aim.getDistance());
-	//printf("kierunek celu: %f3.3, odl: %f3.2\n", node2aim.getYAngle(), node2aim.getDistance());
+	//printf("kierunek: %f3.3, odl: %f3.2\n", node2aim.getYAngle(), node2aim.getDistance());
 
 	// usuwa niepotrzebne wskazniki
-	for (list<sceneItem>::iterator it=scene.begin() ; it != scene.end(); it++ )
+	for (list<SceneItem>::iterator it=scene.begin() ; it != scene.end(); it++ )
 		(*it).pattern->markerInfo = NULL;
 
     argSwapBuffers();
 }
 
-static void draw( list<sceneItem> &scene )
+static void draw( list<SceneItem> &scene )
 {
     double    gl_para[16];
 
@@ -261,7 +244,7 @@ static void draw( list<sceneItem> &scene )
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LEQUAL);
     
-	for (list<sceneItem>::iterator it=scene.begin() ; it != scene.end(); it++ )
+	for (list<SceneItem>::iterator it=scene.begin() ; it != scene.end(); it++ )
 	{
 		GLfloat   mat_ambient[]     = {0.0, 0.0, 1.0, 1.0};
 		GLfloat   mat_flash[]       = {0.0, 0.0, 1.0, 1.0};

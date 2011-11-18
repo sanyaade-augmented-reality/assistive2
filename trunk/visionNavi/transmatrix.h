@@ -2,6 +2,9 @@
 
 #include "math.h"
 
+#include "pattern.h"
+#include "node.h"
+
 class TransMatrix
 	// macierz transformacji - przechowuje tablice [3][4], a 4 wiersz to zawsze [0 0 0 1]
 	// to mo¿e byc przydatne:
@@ -10,7 +13,9 @@ class TransMatrix
 {
 public:
 	TransMatrix(void);
-	TransMatrix(double angleY, double distZ); // kat w stopniach, odleglosc w metrach
+	TransMatrix(double directionAngle, double distance, double faceAngle); // kat w stopniach, odleglosc w metrach
+	TransMatrix(Pattern &p);
+	TransMatrix(gConn &c);
 	~TransMatrix(void);
 	
 	double m[4][4];
@@ -21,12 +26,12 @@ public:
 	double getZAngle();
 
 	// liczy odleglosc przesuniecia w linii prostej w cm
-	double getDistance() {return units2cm(sqrt(pow(m[0][3],2) + pow(m[1][3],2) + pow(m[2][3],2)));}
+	double getDistance();
 
-	TransMatrix inverse() const;
+	TransMatrix inverse();
 	TransMatrix operator*(TransMatrix const &matrix) const;
 private:
-	double determinant() const;
+	// double determinant() const;
 	// przeliczanie z jednostek openGLa na cm
 	double units2cm(double u) const { return u/190*46; }
 	double cm2units(double cm) const { return cm/46*190;}
