@@ -9,7 +9,6 @@ Pattern::Pattern()
 	width = 80.0; // dl boku markera
 	center[0] = 0.0;
 	center[1] = 0.0;
-	found = 0;
 	id = -1;
 	markerInfo = NULL;
 }
@@ -42,6 +41,8 @@ bool Pattern::init(std::string filename, Node* node, float distanceFromNode, flo
 }
 
 void Pattern::autoFaceAngle()
+	// automatyczny k¹t, bêdzie ok, gdy marker jest powieszony na œcianie w pomieszczeniu prostokatnym
+	// ze œcianami równolegle i prostopadle do kierunku N
 {
 	float tempAngle = directionAngle + 45;
 	int i = (int)floor( mod(tempAngle,360) /90);

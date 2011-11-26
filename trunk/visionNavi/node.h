@@ -7,39 +7,29 @@
 
 #include "pattern.h"
 
+class Pattern;
 class Node;
 
 // graph connection - węzeł docelowy, koszt
 class gConn
 {
 public:
-	gConn(Node* dest, float cost, int direction)
-    {
-        this->dest = dest;
-        this->cost = cost;
-		this->direction = direction;
-    }
+	gConn(Node* dest, float cost, int direction) : dest(dest), cost(cost), direction(direction) {}
 
-    Node* dest; // węzeł docelowy
-    float cost;   // koszt (droga w metrach)    
-
-	// kat tak jak w pattern.h
-	int direction; // kierunek połączenia
+    Node* dest;		// węzeł docelowy
+    float cost;		// koszt (droga w metrach)
+	int direction;	// kierunek połączenia - kat 0-360st wzgl kierunku N
 };
 
 class Node
 {
 public:
-	Node(int id)
-	{
-		this->id = id;
-	}
-	~Node();
+	Node(int id) : id(id) {}
+	~Node() {};
 
-	int id;
-
-	std::list<gConn> connections;
-	std::list<Pattern*> patterns;
+	int id;	// nr wierzcholka
+	std::list<gConn> connections;	// polaczenia z danego wierzcholka
+	std::list<Pattern*> patterns;	// markery przyporzadkowane do danego wierzcholka
 };
 
 #endif // NODE_H

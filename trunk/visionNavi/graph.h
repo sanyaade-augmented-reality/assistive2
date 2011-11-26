@@ -10,7 +10,8 @@ using namespace std;
 class Graph
 {
 public:
-    Graph() { connectionNumber = 0; }
+	Graph(): connectionNumber(0) {}
+	std::list<Pattern*>* init();
 
     Node* searchFor(int id);    // szuka elementu a o danym id
 	bool addConnection(Node* a, Node* b, float distance, int directionAB);  // dodaje połączenie między dwoma elementami

@@ -166,7 +166,19 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
+				RelativePath=".\artoolkitwrapper.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\glwindow.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\graph.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\guider.cpp"
 				>
 			</File>
 			<File
@@ -175,10 +187,6 @@
 			</File>
 			<File
 				RelativePath=".\mod.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\node.cpp"
 				>
 			</File>
 			<File
@@ -196,7 +204,19 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
+				RelativePath=".\artoolkitwrapper.h"
+				>
+			</File>
+			<File
+				RelativePath=".\glwindow.h"
+				>
+			</File>
+			<File
 				RelativePath=".\graph.h"
+				>
+			</File>
+			<File
+				RelativePath=".\guider.h"
 				>
 			</File>
 			<File
