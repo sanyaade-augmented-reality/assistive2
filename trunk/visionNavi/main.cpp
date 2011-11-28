@@ -26,12 +26,14 @@ string	patt_name[2];
 Graph				graph;
 ARToolKitWrapper	ar;
 GLWindow			gl;
-Guider				guider;
+Guider*				guider;
 ARUint8*			imageData; // obraz
+bool				enterToMenu = 1;
 
 static void   init();
 static void   keyEvent( unsigned char key, int x, int y);
 static void   mainLoop();
+void menu();
 
 int main(int argc, char **argv)
 {
@@ -82,6 +84,8 @@ static void init( void )
 
 	printf("Image size (x,y) = (%d,%d)\n", ar.getSizeX(), ar.getSizeY());
 
+	guider = new Guider(&graph);
+
 	gl.init(&imageData, cameraParam);
 }
 
@@ -92,10 +96,15 @@ static void keyEvent( unsigned char key, int x, int y)
 		printf("*** %f (frame/sec)\n", (double)ar.getFrameNumber()/arUtilTimer());
         exit(0);
     }
+	else if (key == 13) // Enter
+		// nowy cel
+		enterToMenu = 1;
 }
 
 static void mainLoop(void)
 {
+	if (enterToMenu)
+		menu();
 	list<Pattern*> scene;
     
 	if(!ar.grabFrame())
@@ -104,6 +113,10 @@ static void mainLoop(void)
 	ar.findMarkers();
     arVideoCapNext();
 	scene = ar.getScene();
+
+	// górne pole informacyjne
+	gl.drawBackground(-0.97, 0.87, 0.8, 0.1);
+	gl.printString("Nacisnij Enter aby zmienic cel", -0.95, 0.90);
 	
 	// nic nie ma
 	if( scene.empty() )
@@ -113,9 +126,9 @@ static void mainLoop(void)
     }
 
 	// narysuj je
-	//gl.draw3DScene(scene);
+	////gl.draw3DScene(scene);
 
-	guider.update(scene);
+	guider->update(scene);
 
 	//char str[100];
 	//printf("kierunek celu: %f3.3, odl: %f3.2\n", guider.getAngle(), guider.getDistance());
@@ -123,9 +136,11 @@ static void mainLoop(void)
 	//for (list<Pattern*>::iterator i=scene.begin(); i!=scene.end(); i++)
 	//	printf("id: %d, prob: %3.2f, odl: %3.2f\n", (*i)->id, (*i)->matchProbability, (*i)->transformation.getDistance() );
 	
-	
-	gl.printString(guider.getHint());
-	gl.drawArrow(guider.getAngle());
+	// dolne pole informacyjne
+	gl.drawBackground(-0.97, -0.97, 1.9, 0.22);
+	gl.printString(guider->getHint(), -0.95, -0.85);
+
+	gl.drawArrow(guider->getAngle());
 
 	// usuwa niepotrzebne wskazniki
 	for (list<Pattern*>::iterator it=scene.begin() ; it != scene.end(); it++ )
@@ -134,3 +149,31 @@ static void mainLoop(void)
     argSwapBuffers();
 }
 
+void menu()
+{
+	int i;
+	string temp;
+	cout << "Dostepne punkty: \n";
+	cout << graph << endl;
+	cout << endl;
+	cout << "Wybierz cel: ";
+	//cin.ignore(2);
+	cin >> i;
+	while (!cin.good() || i >= graph.nodeList.size())
+	{
+		if (!cin.good())
+		{
+			cin.clear();
+			cin.ignore(255, '\n');
+			cout<<"Nie podales liczby";
+		}
+		else
+			cout << "Liczba musi byc w zakresie od 0 do " << graph.nodeList.size()-1;
+		cout<<", sprobuj jeszcze raz: ";
+		cin >> i;
+	}
+	Node *aim = graph.searchFor(i);
+	cout << "Nawigacja do " << aim->placeName << endl;
+	guider->setAim(aim);
+	enterToMenu = 0;
+}

@@ -9,30 +9,58 @@ std::list<Pattern*>* Graph::init()
 {
 	list<Pattern*> *patternList = new std::list<Pattern*>;
 
-	// zestaw testowy:
-	//   N - w strone obserwatora, hiro po lewej od kanji
-	//     
-	//   kanji(B) ------------>  hiro(A)
-	//   dirA=0,  dirAB = 90 (bo oœ Z do obserwatora),   dirB = 0
+	string patFiles[4] = 
+	{
+		"Data/patt.hiro",
+		"Data/patt.kanji",
+		"Data/patt.sample1",
+		"Data/patt.sample2"
+	};
 
-	Node* aNode = addNode();
-	Pattern *hiro = new Pattern("Data/patt.hiro\0", aNode, 0.5, 0);
-	if (!hiro->initialized)
-		return NULL; // zwraca pusta liste jako znak bledu
-	patternList->push_back(hiro);
-	aNode->patterns.push_back(hiro);
-	
-	Node* bNode = addNode();
-	Pattern *kanji = new Pattern("Data/patt.kanji\0", bNode, 0.5, 0);	
-	if (!kanji->initialized)
-		return NULL;
-	patternList->push_back(kanji);
-	bNode->patterns.push_back(kanji);
+	string placeNames[4] = 
+	{
+		"hiro",
+		"kanji",
+		"sample1",
+		"sample2"
+	};
 
-	//Node* cNode = addNode();
+	double patDist[4] =
+	{
+		0.5,
+		0.5,
+		0.5,
+		0.5
+	};
+
+	double patDirAngle[4] =
+	{
+		0,
+		0,
+		0,
+		0
+	};
+
+	Node *tNode[4];
+
+	for (int i=0; i<4; i++)
+	{
+		tNode[i] = addNode(placeNames[i]);
+		Pattern* pattern = tNode[i]->addPattern(patFiles[i], patDist[i], patDirAngle[i]);
+		if(!pattern)
+		{
+			delete nodeList.back();
+			nodeList.pop_back();
+			delete patternList;
+			return NULL; // zwraca NULL jako znak bledu
+		}
+		patternList->push_back(pattern);
+	}
 	
-	addConnection(aNode, bNode, 5, 270);
-	//addConnection(bNode, cNode, 5, 90);
+	addConnection(tNode[0], tNode[1], 5, 270);
+	addConnection(tNode[1], tNode[2], 5, 270);
+	addConnection(tNode[2], tNode[3], 5, 270);
+
 	return patternList;
 }
 
@@ -53,32 +81,31 @@ Node* Graph::searchFor(int id)
     return 0;
 }
 
-Node* Graph::addNode()
+Node* Graph::addNode(string placeName)
 {
-	Node *node = new Node(nodeList.size());
+	Node *node = new Node(nodeList.size(), placeName);
 	nodeList.push_back(node);
 	return node;
 }
 
-list<Node*> Graph::getPath(Node* start, Node* stop)
+void Graph::getPath(Node* start, Node* stop, list<gConn*>& path)
+	// zwracanie wyniku przez referencje path
 	// Tu wstawiæ algorytm Dijkstry
 {
-	list<Node *> result;
-	result.push_back(stop);
-	//vector<int> d;
-	//vector<int> p;
-	//for (int i=0; i<connectionNumber; i++)
-	//{
-	//	d[i] = -1;
-	//	p[i] = -1;
-	//}
-	//int s = 0;
-	//d[s] = 0;
-	//list<Node *> Q = list<Node*>(nodeList);
-	//while(!Q.empty())
-	//{
-	//	u = 
-	//}
+	Node *currentNode = start;
+	path.clear();
+	
+	// algorytm tymczaowy
+	while (currentNode!=stop)
+	{
+		path.push_back(&currentNode->connections.back());
+		currentNode = path.back()->dest;
+	}
+}
 
-	return result;
+ostream& operator<<(ostream &out, const Graph &g)
+{
+	for (list<Node*>::const_iterator i=g.nodeList.begin(); i != g.nodeList.end(); i++)
+		out << **i << endl;
+	return out;
 }

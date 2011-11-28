@@ -3,14 +3,14 @@
 #include "pattern.h"
 #include "mod.h"
 
-Pattern::Pattern()
+Pattern::Pattern() : 
+	initialized(0),	
+	width(200.0), 
+	id(-1), 
+	markerInfo(NULL)
 {
-	initialized = 0;
-	width = 80.0; // dl boku markera
 	center[0] = 0.0;
 	center[1] = 0.0;
-	id = -1;
-	markerInfo = NULL;
 }
 
 Pattern::Pattern(std::string filename, Node* node, float distanceFromNode, float directionAngle, float faceAngle )

@@ -190,6 +190,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\node.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\pattern.cpp"
 				>
 			</File>

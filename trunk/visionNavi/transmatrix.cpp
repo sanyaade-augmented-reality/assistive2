@@ -32,8 +32,8 @@ void TransMatrix::constructorHelper(double directionAngle, double distance, doub
 	m[0][2] = sin(faceAngle*PI/180);
 	m[2][0] = -sin(faceAngle*PI/180);
 	
-	m[0][3] = cm2units( sin(directionAngle*PI/180) * distance * 100); // przesuniecie wzdluz osi x
-	m[2][3] = cm2units( cos(directionAngle*PI/180) * distance * 100); // przesuniecie wzdluz osi z
+	m[0][3] = m2units( sin(directionAngle*PI/180) * distance); // przesuniecie wzdluz osi x
+	m[2][3] = m2units( cos(directionAngle*PI/180) * distance); // przesuniecie wzdluz osi z
 }
 
 TransMatrix::TransMatrix(double directionAngle, double distance, double faceAngle)
@@ -53,7 +53,7 @@ TransMatrix::TransMatrix(double directionAngle, double distance, double faceAngl
 
 double TransMatrix::getDistance() const
 {
-	return units2cm(sqrt(pow(m[0][3],2) /*+ pow(m[1][3],2)*/ + pow(m[2][3],2)));
+	return units2m(sqrt(pow(m[0][3],2) /*+ pow(m[1][3],2)*/ + pow(m[2][3],2)));
 }
 
 TransMatrix::~TransMatrix(void)

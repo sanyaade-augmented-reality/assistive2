@@ -28,9 +28,10 @@ public:
 private:
 	void makeIdentityMat();
 	void constructorHelper(double directionAngle, double distance, double faceAngle);
-	// przeliczanie z jednostek openGLa na cm
-	double units2cm(double u) const { return u/190*46; }
-	double cm2units(double cm) const { return cm/46*190;}
+	// przeliczanie z jednostek openGLa na m 
+	// okazuje sie ze po skalibrowaniu i odp wpisaniu rozmiaru markera jednostki to mm
+	double units2m(double u) const { return u/1000; }
+	double m2units(double m) const { return m*1000;}
 };
 
 #endif //TRANSMATRIX_H

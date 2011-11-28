@@ -15,7 +15,7 @@ class Pattern
 public:
 	Pattern(void);
 	Pattern(std::string filename, Node* node, float distanceFromNode, float directionAngle, float faceAngle = -1.0 );
-	~Pattern(void);
+	~Pattern(void) {};
 
 	bool init(std::string filename, Node* node, float distanceFromNode, float directionAngle, float faceAngle = -1.0 );
 
