@@ -272,10 +272,14 @@ void menuGL()
 			enterToMenu = 0;
 			page = 0;
 			constrErr = 0;
+			confirmed = 0;
 			userText.clear();
 		}
 		else
+		{
 			constrErr = 1;
+			confirmed = 0;
+		}
 	}
 
 	if (constrErr)
