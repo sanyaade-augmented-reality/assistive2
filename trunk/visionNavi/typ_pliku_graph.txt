@@ -5,22 +5,36 @@ ilosc_nodów
 nr_noda
 nazwa_miejsca
 plik_z_nodem
+odleglosc_markera1
+kat_markera1
+odleglosc_markera2
+kat_markera2
+odleglosc_markera3
+kat_markera3
 
 nr_noda
 nazwa_miejsca
 plik_z_nodem
+odleglosc_markera1
+kat_markera1
 
 nr_noda
 nazwa_miejsca
 plik_z_nodem
+odleglosc_markera1
+kat_markera1
 
 nr_noda
 nazwa_miejsca
 plik_z_nodem
+odleglosc_markera1
+kat_markera1
 
 nr_noda
 nazwa_miejsca
 plik_z_nodem
+odleglosc_markera1
+kat_markera1
 
 #Polaczenia pomiedzy nodami
 z
