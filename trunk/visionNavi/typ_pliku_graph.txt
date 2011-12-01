@@ -37,7 +37,7 @@ nazwa_miejsca
 plik_z_nodem
 odleglosc_markera1
 kat_markera1
-
+*
 #Polaczenia pomiedzy nodami
 z
 do
