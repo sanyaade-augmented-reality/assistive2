@@ -37,6 +37,13 @@ public:
 	std::list<Pattern*> patterns;	// markery przyporzadkowane do danego wierzcholka
 
 	friend ostream& operator<<(ostream &out, const Node &n);
+
+	bool operator<(Node & rhs);		//do Dijkstry... UWAGA, działa nieintuicyjnie!
+
+	gConn * prevConn;				// do Dijkstry (polaczenie do poprzedniego wierzcholka na sciezce)
+	Node * prevNode;				// do Dijkstry (poprzedni wierzcholek na sciezce)
+	double pathCost;
+	bool explored;					// Rowniez do Dijkstry
 };
 
 #endif // NODE_H

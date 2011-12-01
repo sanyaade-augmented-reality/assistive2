@@ -17,3 +17,7 @@ ostream& operator<<(ostream &out, const Node &n)
 	out << n.id << ". " << n.placeName;
 	return out;
 }
+
+bool Node::operator<(Node & rhs){
+	return this->pathCost > rhs.pathCost;
+}

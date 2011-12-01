@@ -1,23 +1,56 @@
 #include "graph.h"
+#include <fstream>
+#include <iostream>
 #include <vector>
+#include <sstream>
+#include <queue>
 
 using namespace std;
+
+// Do konwersji string na liczby
+template <class T>
+	bool from_string(T& t, const std::string& s, std::ios_base& (*f)(std::ios_base&))
+	{
+		std::istringstream iss(s);
+		return !(iss >> f >> t).fail();
+	}
 
 std::list<Pattern*>* Graph::init()
 	// wcztywanie danych - tu powinno siê znaleŸæ wczytywanie danych z pliku,
 	// którego nazwa bêdzie podana jako argument tej funkcji
 {
+	string buf;
+	ifstream file("mapa.graph");
+	int numberOfNodes = 0;
+	int nodeIndex;
+
 	list<Pattern*> *patternList = new std::list<Pattern*>;
 
-	string patFiles[4] = 
+	if (!file)
+	{
+        // Print an error and exit
+        cerr << "File mapa.graph couldn't be opened for reading!" << endl;
+        exit(1);
+	}
+
+	getline(file, buf);
+	if(buf.compare(0,2,"GR") != 0)
+	{
+		// Print an error and exit
+        cerr << "File mapa.graph is not proper graph file!" << endl;
+        exit(1);
+	}
+	/*
+	vector<string> patFiles; = 
 	{
 		"Data/patt.hiro",
 		"Data/patt.kanji",
 		"Data/patt.sample1",
 		"Data/patt.sample2"
-	};
+	};*/
 
-	string placeNames[4] = 
+	/*
+	vector<string> placeNames; 
 	{
 		"hiro",
 		"kanji",
@@ -25,7 +58,7 @@ std::list<Pattern*>* Graph::init()
 		"sample2"
 	};
 
-	double patDist[4] =
+	vector<double> patDist; 
 	{
 		0.5,
 		0.5,
@@ -33,7 +66,7 @@ std::list<Pattern*>* Graph::init()
 		0.5
 	};
 
-	double patDirAngle[4] =
+	vector<double> patDirAngle = 
 	{
 		0,
 		0,
@@ -41,25 +74,98 @@ std::list<Pattern*>* Graph::init()
 		0
 	};
 
-	Node *tNode[4];
 
-	for (int i=0; i<4; i++)
+	vector<int> indexes;*/
+
+	//Loading number of nodes
+		while(getline(file, buf) && !buf.compare(0,1,"#"));
+		from_string<int>(numberOfNodes, buf, std::dec);
+		cout << numberOfNodes;
+		
+	while(getline(file, buf) && !buf.compare(0,1,"#"));
+
+	if(!buf.empty())
 	{
-		tNode[i] = addNode(placeNames[i]);
-		Pattern* pattern = tNode[i]->addPattern(patFiles[i], patDist[i], patDirAngle[i]);
-		if(!pattern)
+		cerr << "Error in file data.graph, improper format" << endl;
+		exit(1);
+	}
+	Node **tNode = 
+		new Node*[numberOfNodes];
+	bool nodesEnd = false;
+
+	while (nodesEnd == false)
+	{
+		string patFile;
+		double patDist;
+		double patDirAngle;
+
+		while(getline(file, buf) && !buf.compare(0,1,"#"));
+		if(buf.compare(0,1,"*"))
 		{
-			delete nodeList.back();
-			nodeList.pop_back();
-			delete patternList;
-			return NULL; // zwraca NULL jako znak bledu
+			nodesEnd = true;
+			continue;
 		}
-		patternList->push_back(pattern);
+
+		from_string<int>(nodeIndex, buf, std::dec);
+		while(getline(file, buf) && !buf.compare(0,1,"#"));
+		tNode[nodeIndex] = addNode(buf);
+	
+		while(getline(file, buf) && !buf.compare(0,1,"#"));
+		while(!buf.empty())
+		{
+			patFile = buf;
+
+			while(getline(file, buf) && !buf.compare(0,1,"#"));
+			from_string<double>(patDist, buf, std::dec);
+
+			while(getline(file, buf) && !buf.compare(0,1,"#"));
+			from_string<double>(patDirAngle, buf, std::dec);
+
+			Pattern* pattern = tNode[nodeIndex]->addPattern(patFile, patDist, patDirAngle);
+			if(!pattern)
+			{
+				delete nodeList.back();
+				nodeList.pop_back();
+				delete patternList;
+				return NULL; // zwraca NULL jako znak bledu
+			}
+			patternList->push_back(pattern);
+
+			while(getline(file, buf) && !buf.compare(0,1,"#"));
+		}
+		while(getline(file, buf) && !buf.compare(0,1,"#"));
 	}
 	
-	addConnection(tNode[0], tNode[1], 5, 270);
-	addConnection(tNode[1], tNode[2], 5, 270);
-	addConnection(tNode[2], tNode[3], 5, 270);
+	bool connEnd = false;
+
+	while (connEnd == false)
+	{
+		int fromIndex,toIndex;
+		double cost;
+		double angle;
+
+		while(getline(file, buf) && !buf.compare(0,1,"#"));
+		if(buf.compare(0,1,"*"))
+		{
+			connEnd = true;
+			continue;
+		}
+
+		from_string<int>(fromIndex, buf, std::dec);
+		
+		while(getline(file, buf) && !buf.compare(0,1,"#"));
+		from_string<int>(toIndex, buf, std::dec);
+
+		while(getline(file, buf) && !buf.compare(0,1,"#"));
+		from_string<double>(cost, buf, std::dec);
+
+		while(getline(file, buf) && !buf.compare(0,1,"#"));
+		from_string<double>(angle, buf, std::dec);
+
+		addConnection(tNode[fromIndex], tNode[toIndex], cost, angle);
+	}
+
+	file.close();
 
 	return patternList;
 }
@@ -88,19 +194,71 @@ Node* Graph::addNode(string placeName)
 	return node;
 }
 
-void Graph::getPath(Node* start, Node* stop, list<gConn*>& path)
 	// zwracanie wyniku przez referencje path
 	// Tu wstawiæ algorytm Dijkstry
+void Graph::getPath(Node* start, Node* stop, list<gConn*>& path)
 {
-	Node *currentNode = start;
-	path.clear();
-	
-	// algorytm tymczaowy
-	while (currentNode!=stop)
+	Node* act;
+	Node* next;
+
+	priority_queue<Node*> toExplore;
+
+	for(list<Node*>::iterator it = nodeList.begin(); it != nodeList.end(); it++)
 	{
-		path.push_back(&currentNode->connections.back());
-		currentNode = path.back()->dest;
+		act = *it;
+		act->prevNode = NULL;
+		act->prevConn = NULL;
+		act->pathCost = 1e20;
+		act->explored = false;
 	}
+
+	toExplore.push(start);
+	path.clear();
+
+	while(act != stop && !toExplore.empty())
+	{
+		act = toExplore.top();
+		toExplore.pop();
+		
+		if(act->explored == true)
+			continue;
+
+		act->explored = true;
+		
+		for(list<gConn>::iterator it = act->connections.begin(); it != act->connections.end(); it++)
+		{
+			next = (*it).dest;
+			if(next->explored == false)
+			{
+				if(next->pathCost > act->pathCost + (*it).cost)
+				{
+					next->pathCost = act->pathCost + (*it).cost;
+					next->prevNode = act;
+					next->prevConn = &(*it);
+					toExplore.push(next);
+				}
+			}
+		}
+	}
+	
+	//Teraz rekonstrukcja sciezki
+	act = stop;
+	if(stop->prevNode != NULL)
+	{
+		//znaleziono sciezke
+		while(act != start)
+		{
+			path.push_back(act->prevConn);
+			act = act->prevNode;
+		}
+	}
+
+	// algorytm tymczaowy
+	//while (currentNode!=stop)
+	//{
+	//	path.push_back(&currentNode->connections.back());
+	//	currentNode = path.back()->dest;
+	//}
 }
 
 ostream& operator<<(ostream &out, const Graph &g)
