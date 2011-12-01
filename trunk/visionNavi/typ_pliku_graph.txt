@@ -1,5 +1,7 @@
+GR
 # Komentarz
 ilosc_nodów
+
 nr_noda
 nazwa_miejsca
 plik_z_nodem
@@ -24,11 +26,14 @@ plik_z_nodem
 z
 do
 koszt
+kat
 z
 do
 koszt
+kat
 z
 do
 koszt
+kat
 *
 Po gwiazdce nic ju¿ nie zostanie wczytane
