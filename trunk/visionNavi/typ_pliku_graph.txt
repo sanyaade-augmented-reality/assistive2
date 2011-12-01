@@ -1,0 +1,34 @@
+# Komentarz
+ilosc_nodów
+nr_noda
+nazwa_miejsca
+plik_z_nodem
+
+nr_noda
+nazwa_miejsca
+plik_z_nodem
+
+nr_noda
+nazwa_miejsca
+plik_z_nodem
+
+nr_noda
+nazwa_miejsca
+plik_z_nodem
+
+nr_noda
+nazwa_miejsca
+plik_z_nodem
+
+#Polaczenia pomiedzy nodami
+z
+do
+koszt
+z
+do
+koszt
+z
+do
+koszt
+*
+Po gwiazdce nic ju¿ nie zostanie wczytane
