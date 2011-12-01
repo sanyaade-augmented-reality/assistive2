@@ -4,11 +4,13 @@ ilosc_nodów
 
 nr_noda
 nazwa_miejsca
-plik_z_nodem
+plik_z_markerem1
 odleglosc_markera1
 kat_markera1
+plik_z_markerem2
 odleglosc_markera2
 kat_markera2
+plik_z_markerem3
 odleglosc_markera3
 kat_markera3
 
