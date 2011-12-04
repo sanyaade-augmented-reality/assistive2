@@ -155,9 +155,9 @@ static void mainLoop(void)
 	// dolne pole informacyjne
 	if (!guider->aimName().empty())
 	{
+		gl->drawArrow(guider->getAngle());
 		gl->drawBackground(-0.97, -1.0, 1.9, 0.22);
 		gl->printString(guider->getHint(), -0.95, -0.85);
-		gl->drawArrow(guider->getAngle());
 	}
 
 	// usuwa niepotrzebne wskazniki

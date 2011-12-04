@@ -154,7 +154,7 @@ void GLWindow::drawArrow(double yAngle)
 		
 	// kolor, oswietlenie, material -----------------------
 
-	GLfloat   mat_ambient[]     = {0.0, 0.0, 1.0, 1.0};
+	GLfloat   mat_ambient[]     = {0.0, 0.0, 1.0, 0.3};
 	GLfloat   mat_flash[]       = {0.0, 5.0, 5.0, 1.0};
 	GLfloat   mat_flash_shiny[] = {100.0};
 	GLfloat   light_position[]  = {80.0, 120.0,120.0,3.0};

@@ -31,7 +31,7 @@ bool Guider::update(const list<Pattern*> scene)
 		graph->getPath(nearestNode, aim, path);
 
 	TransMatrix node2marker = TransMatrix(nearestPattern->directionAngle,nearestPattern->distanceFromNode,nearestPattern->faceAngle);
-	TransMatrix user2marker = scene.front()->transformation;
+	TransMatrix user2marker = nearestPattern->transformation;
 	TransMatrix node2user = node2marker*user2marker.inverse();
 	TransMatrix node2aim; // domyslnie macierz jednostkowa
 	if (!path.empty())	// nie doszlismy do ostatniego wierzcholka

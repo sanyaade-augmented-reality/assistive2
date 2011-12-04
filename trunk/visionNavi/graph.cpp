@@ -100,7 +100,7 @@ std::list<Pattern*>* Graph::init()
 		double patDirAngle;
 
 		while(getline(file, buf) && !buf.compare(0,1,"#"));
-		if(buf.compare(0,1,"*"))
+		if(!buf.compare(0,1,"*"))
 		{
 			nodesEnd = true;
 			continue;
@@ -133,7 +133,7 @@ std::list<Pattern*>* Graph::init()
 
 			while(getline(file, buf) && !buf.compare(0,1,"#"));
 		}
-		while(getline(file, buf) && !buf.compare(0,1,"#"));
+		//while(getline(file, buf) && !buf.compare(0,1,"#"));
 	}
 	
 	bool connEnd = false;
@@ -145,7 +145,7 @@ std::list<Pattern*>* Graph::init()
 		double angle;
 
 		while(getline(file, buf) && !buf.compare(0,1,"#"));
-		if(buf.compare(0,1,"*"))
+		if(!buf.compare(0,1,"*"))
 		{
 			connEnd = true;
 			continue;
@@ -215,6 +215,7 @@ void Graph::getPath(Node* start, Node* stop, list<gConn*>& path)
 	toExplore.push(start);
 	path.clear();
 
+	start->pathCost = 0.0;
 	while(act != stop && !toExplore.empty())
 	{
 		act = toExplore.top();
@@ -248,7 +249,7 @@ void Graph::getPath(Node* start, Node* stop, list<gConn*>& path)
 		//znaleziono sciezke
 		while(act != start)
 		{
-			path.push_back(act->prevConn);
+			path.push_front(act->prevConn);
 			act = act->prevNode;
 		}
 	}
