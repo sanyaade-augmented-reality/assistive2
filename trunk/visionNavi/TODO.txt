@@ -1,7 +1,0 @@
-1. szukanie drogi - algorytm dijkstry
-
-2. po³o¿enie wzglêdem markera - zw³aszcza k¹t - w tej chwili wiadomo gdzie jest u¿ytkownik ale nie wiadomo, czy jest zwrócony do markera przodem, lew¹, czy praw¹ stron¹, przez co nie mo¿emy mu pomóc.
-
-3. usun¹æ powtarzanie siê komunikatów
-
-4. generowanie markerów
