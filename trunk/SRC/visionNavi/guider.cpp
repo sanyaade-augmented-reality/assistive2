@@ -10,8 +10,6 @@
 * @date 9.12.2011
 */
 
-const double Guider::goalDistance = 0.5;
-
 const char Guider::dictionary[8][32] = 
 {
 	"zawroc",
@@ -26,45 +24,45 @@ const char Guider::dictionary[8][32] =
 
 bool Guider::update(const list<Pattern*> scene)
 {
-	Pattern* nearestPatTemp = NULL;
-	for (list<Pattern*>::const_iterator i=scene.begin(); i!=scene.end(); i++)
-		if (!nearestPatTemp || (*i)->transformation.getDistance() < nearestPatTemp->transformation.getDistance() )
-			nearestPatTemp = *i;
-
-	// jesli jednak nie znalazlo zadnego wierzcholka wychodzi
-	if (!nearestPatTemp)
-		return 0;
-
-	nearestPattern = nearestPatTemp;
-	nearestNode = nearestPatTemp->node;
-	
-	if (aim)
-		graph->getPath(nearestNode, aim, path);
-
-	TransMatrix node2marker = TransMatrix(nearestPattern->directionAngle,nearestPattern->distanceFromNode,nearestPattern->faceAngle);
-	double node2markerAn = user2aim.getYAngle();
-	TransMatrix user2marker = nearestPattern->transformation;
-	double user2markerAn = user2marker.getYAngle();
-	TransMatrix node2user = node2marker*user2marker.inverse();
-	double node2userAn = user2aim.getYAngle();
-	TransMatrix node2aim; // domyslnie macierz jednostkowa
-	if (!path.empty())	// nie doszlismy do ostatniego wierzcholka
-		node2aim = TransMatrix(path.front()->direction, path.front()->cost, 0);
-	
-	user2aim = node2user.inverse()*node2aim;
-	double user2aimAn = user2aim.getYAngle();
-	angle = user2aim.getYAngle();
-	nextNodeDistance = user2aim.getDistance();
-	
-	aimDistance = nextNodeDistance;
-	for (list<gConn*>::iterator i=path.begin(); i != path.end(); i++)
+	// jesli znaleziono marker
+	if (!scene.empty())
 	{
-		if (i != path.begin()) // dla pierwszego wierzcholka mamy koszt wyliczony z macierzy przejscia
-			aimDistance += (*i)->cost;
-	}
+		Pattern* nearestPatTemp = NULL;
+		for (list<Pattern*>::const_iterator i=scene.begin(); i!=scene.end(); i++)
+			if (!nearestPatTemp || (*i)->transformation.getDistance() < nearestPatTemp->transformation.getDistance() )
+				nearestPatTemp = *i;
 
-	getDirection();
-	makeHint();
+		nearestPattern = nearestPatTemp;
+		nearestNode = nearestPatTemp->node;
+		
+		if (aim)
+			graph->getPath(nearestNode, aim, path);
+
+		TransMatrix node2marker = TransMatrix(nearestPattern->directionAngle,nearestPattern->distanceFromNode,nearestPattern->faceAngle);
+		//double node2markerAn = user2aim.getYAngle();
+		TransMatrix user2marker = nearestPattern->transformation;
+		//double user2markerAn = user2marker.getYAngle();
+		TransMatrix node2user = node2marker*user2marker.inverse();
+		//double node2userAn = user2aim.getYAngle();
+		TransMatrix node2aim; // domyslnie macierz jednostkowa
+		if (!path.empty())	// nie doszlismy do ostatniego wierzcholka
+			node2aim = TransMatrix(path.front()->direction, path.front()->cost, 0);
+		
+		user2aim = node2user.inverse()*node2aim;
+		angle = user2aim.getYAngle();
+		nextNodeDistance = user2aim.getDistance();
+		
+		aimDistance = nextNodeDistance;
+		for (list<gConn*>::iterator i=path.begin(); i != path.end(); i++)
+		{
+			if (i != path.begin()) // dla pierwszego wierzcholka mamy koszt wyliczony z macierzy przejscia
+				aimDistance += (*i)->cost;
+		}
+
+		getDirection();
+		if (!_atAim)
+			makeHint();
+	}
 
 	return 1;
 }
@@ -96,9 +94,8 @@ void Guider::makeHint()
 	ostringstream os;
 	os.precision(2);
 	os.setf(ios::fixed);
-	if (aimDistance > goalDistance)
+	if (aimDistance > aimAchivedDist)
 	{
-		_atAim = 0;
 		os << "znajdujesz sie w " << nearestNode->placeName << ", " << dictionary[direction] << ",\ndo celu pozostalo " << aimDistance << "m";
 		if (!path.empty())
 			os << ", do najblizszego punktu kontrolnego " << nextNodeDistance << "m";

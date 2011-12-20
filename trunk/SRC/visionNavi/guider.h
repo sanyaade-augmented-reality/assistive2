@@ -41,7 +41,7 @@ public:
 	 *
 	 *  @param graph wskaŸnik na graf z którego bêdzie korzysta³ obiekt
 	 */
-	Guider(Graph* graph) : graph(graph), aim(NULL) {};
+	Guider(Graph* graph) : graph(graph), aim(NULL), aimAchivedDist(0.8) {};
 
 	/** @brief Destruktor*/
 	~Guider(void) {};
@@ -51,9 +51,6 @@ public:
 	 *  @param scene Lista widocznych markerów z informacjami o nich
 	 */
 	bool update(list<Pattern*> scene);		// uaktualnia polozenie
-
-	/** @brief generuje wskazówkê s³own¹*/
-	string getHint() { return hint; }						// wskazowka slowna
 
 	/** @brief zwraca wierzcho³ek, w ktorym znajduje siê u¿ytkownik*/
 	Node* findUs() { return nearestNode; }	// znajduje wierzcho³ek najbli¿szy lokalizacji
@@ -73,11 +70,15 @@ public:
 	/** @brief zwraca nazwê wierzcho³ka celu*/
 	string aimName();
 
+	/** @brief generuje wskazówkê s³own¹*/
 	void makeHint();
 
+	/** @brief pobiera wskazówkê s³own¹*/
+	string getHint() { return hint; }
+
 private:
-	/** @brief zwraca kierunek celu*/
-	Direction getDirection();	/**< kierunek do nastepnego wierzcholka */
+	/** @brief zwraca kierunek do nastepnego wierzcholka*/
+	Direction getDirection();
 	
 	double nextNodeDistance;	/**< odleglosc do nastepnego wierzcholka */
 	Direction direction;		/**< kierunek do nastepnego wierzcholka */
@@ -85,20 +86,16 @@ private:
 	TransMatrix user2aim;		/**< macierz transformacji do nastepnego wierzcholka */
 	Pattern* nearestPattern;	/**< najblizszy marker */
 
-	string hint;
+	string hint;				/**< wygenerowana wskazówka s³owna */
 
-	bool _atAim;					/**< czy osiagnieto cel*/
-
-	Graph *graph;
+	Graph *graph;				/**< graf po³¹czeñ*/
 
 	list<gConn*> path;			/**< aktualna sciezka do celu */
 	Node* aim;					/**< cel */
 	double angle;				/**< kat do celu */
 	double aimDistance;			/**< odlegosc do celu */
-
-	int lastUpdate;				/**< nr klatki w której ostatnio by³y uaktualniane wyniki */
+	bool _atAim;				/**< czy osiagnieto cel*/
+	double aimAchivedDist;	/**< poni¿ej tej odleg³oœci do celu system uzna, ¿e cel zosta³ osi¹gniêty*/
 	
-	static const char dictionary[8][32]; /**< slownik kierunkow */
-
-	static const double goalDistance; /**< dystans odpowiadaj¹cy osi¹gniêciu celu */
+	static const char dictionary[8][32];/**< slownik kierunkow */
 };

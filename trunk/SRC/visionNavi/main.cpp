@@ -156,8 +156,6 @@ static void init( int choice )
 	arInitCparam( &cameraParam );
 	// ----------------------------------------
 
-	printf("Image size (x,y) = (%d,%d)\n", ar.getSizeX(), ar.getSizeY());
-
 	guider = new Guider(&graph);
 
 	if(preChoice != -1)
@@ -196,15 +194,12 @@ static void mainLoop(void)
 		ostringstream os;
 		if (!aim.empty())
 		{
-			gl->drawBackground(-0.97, 0.90, 1.5, 0.1);
+			gl->drawBackground(-0.97, 0.9, 1.93, 0.1);
 			os << "Nawigacja do " << aim << ". ";
 			os	<< "Nacisnij Enter aby zmienic cel";
 		}
 		else
-		{
-			gl->drawBackground(-0.97, 0.9, 0.8, 0.1);
 			os	<< "Nacisnij Enter aby ustalic cel";
-		}
 		gl->printString(os.str(), -0.95, 1.0);
 	}
 	
@@ -212,15 +207,21 @@ static void mainLoop(void)
 	// nic nie ma
 	if(!guider->aimName().empty())
 	{
-		// dolne pole informacyjne
 		if (!scene.empty())
 		{
-			gl->draw3DScene(scene);
+			//gl->draw3DScene(scene);
 			guider->update(scene);
-			gl->drawArrow(guider->getAngle());
+			if(!guider->atAim())
+				gl->drawArrow(guider->getAngle());
 		}
-		gl->drawBackground(-0.97, -1.0, 1.9, 0.22);
-		gl->printString(guider->getHint(), -0.95, -0.85);
+		
+		// dolne pole informacyjne
+		string hint = guider->getHint();
+		if (!hint.empty())
+		{
+			gl->drawBackground(-0.97, -1.0, 1.93, 0.21);
+			gl->printString(hint, -0.95, -0.85);
+		}
 
 		// usuwa niepotrzebne wskazniki
 		for (list<Pattern*>::iterator it=scene.begin() ; it != scene.end(); it++ )
@@ -235,7 +236,6 @@ void keyEvent( unsigned char key, int x, int y)
     // ESC - wyjscie
 	if(enterToMenu)
 	{
-		printf("%d\n", key);
 		if (key >= '0' && key <= '9') // sprawdza czy u¿ytkownik wpisa³ cyfrê
 			userText.append(1, key);
 		else if (key == 8 && !userText.empty()) //backspace
@@ -266,34 +266,6 @@ void keyEvent( unsigned char key, int x, int y)
 		else if (key == 13)// Enter
 			enterToMenu = 1; // nowy cel
 	}
-}
-
-void menu()
-{
-	unsigned int i;
-	cout << "Dostepne punkty: \n";
-	cout << graph << endl;
-	cout << endl;
-	cout << "Wybierz cel: ";
-	//cin.ignore(2);
-	cin >> i;
-	while (!cin.good() || i >= graph.nodeList.size())
-	{
-		if (!cin.good())
-		{
-			cin.clear();
-			cin.ignore(255, '\n');
-			cout<<"Nie podales liczby";
-		}
-		else
-			cout << "Liczba musi byc w zakresie od 0 do " << graph.nodeList.size()-1;
-		cout<<", sprobuj jeszcze raz: ";
-		cin >> i;
-	}
-	Node *aim = graph.searchFor(i);
-	cout << "Nawigacja do " << aim->placeName << endl;
-	guider->setAim(aim);
-	enterToMenu = 0;
 }
 
 void menuGL()
