@@ -81,10 +81,10 @@ void GLWindow::draw3DScene( list<Pattern*> &scene )
 		// -------------------------------------------------------------
 
 		//glMatrixMode(GL_MODELVIEW);
-		glTranslatef( 0.0, 0.0, 25.0 );
-		glutSolidCube(50.0);
-		glDisable( GL_LIGHTING );
-		glTranslatef( 0.0, 0.0, -25.0 );
+//		glTranslatef( 0.0, 0.0, 25.0 );
+//		glutSolidCube(50.0);
+//		glDisable( GL_LIGHTING );
+//		glTranslatef( 0.0, 0.0, -25.0 );
 
 		glDisable( GL_DEPTH_TEST );
 	}
