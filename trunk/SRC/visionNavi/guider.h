@@ -53,7 +53,7 @@ public:
 	bool update(list<Pattern*> scene);		// uaktualnia polozenie
 
 	/** @brief generuje wskazówkê s³own¹*/
-	string getHint();						// wskazowka slowna
+	string getHint() { return hint; }						// wskazowka slowna
 
 	/** @brief zwraca wierzcho³ek, w ktorym znajduje siê u¿ytkownik*/
 	Node* findUs() { return nearestNode; }	// znajduje wierzcho³ek najbli¿szy lokalizacji
@@ -65,10 +65,15 @@ public:
 	 *
 	 *  @param ustawia/zmienia cel
 	 */
-	void setAim(Node* aim) { this->aim = aim; }
+	void setAim(Node* aim) { this->aim = aim; _atAim=0;}
+	
+	/** @brief czy dotarto do celu*/
+	bool atAim() { return _atAim; }
 
 	/** @brief zwraca nazwê wierzcho³ka celu*/
 	string aimName();
+
+	void makeHint();
 
 private:
 	/** @brief zwraca kierunek celu*/
@@ -79,6 +84,10 @@ private:
 	Node* nearestNode;			/**< najblizszy wierzcholek */
 	TransMatrix user2aim;		/**< macierz transformacji do nastepnego wierzcholka */
 	Pattern* nearestPattern;	/**< najblizszy marker */
+
+	string hint;
+
+	bool _atAim;					/**< czy osiagnieto cel*/
 
 	Graph *graph;
 

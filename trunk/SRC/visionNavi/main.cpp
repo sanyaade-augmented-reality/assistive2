@@ -196,7 +196,7 @@ static void mainLoop(void)
 		ostringstream os;
 		if (!aim.empty())
 		{
-			gl->drawBackground(-0.97, 0.90, 1.4, 0.1);
+			gl->drawBackground(-0.97, 0.90, 1.5, 0.1);
 			os << "Nawigacja do " << aim << ". ";
 			os	<< "Nacisnij Enter aby zmienic cel";
 		}
@@ -210,34 +210,22 @@ static void mainLoop(void)
 	
 
 	// nic nie ma
-	if( scene.empty() )
+	if(!guider->aimName().empty())
 	{
-        argSwapBuffers();
-        return;
-    }
-
-	// narysuj je
-	gl->draw3DScene(scene);
-
-	guider->update(scene);
-
-	//char str[100];
-	//printf("kierunek celu: %f3.3, odl: %f3.2\n", guider.getAngle(), guider.getDistance());
-	//printf("------------------------------------\n");
-	//for (list<Pattern*>::iterator i=scene.begin(); i!=scene.end(); i++)
-	//	printf("id: %d, prob: %3.2f, odl: %3.2f\n", (*i)->id, (*i)->matchProbability, (*i)->transformation.getDistance() );
-	
-	// dolne pole informacyjne
-	if (!guider->aimName().empty())
-	{
-		gl->drawArrow(guider->getAngle());
+		// dolne pole informacyjne
+		if (!scene.empty())
+		{
+			gl->draw3DScene(scene);
+			guider->update(scene);
+			gl->drawArrow(guider->getAngle());
+		}
 		gl->drawBackground(-0.97, -1.0, 1.9, 0.22);
 		gl->printString(guider->getHint(), -0.95, -0.85);
-	}
 
-	// usuwa niepotrzebne wskazniki
-	for (list<Pattern*>::iterator it=scene.begin() ; it != scene.end(); it++ )
-		(*it)->markerInfo = NULL;
+		// usuwa niepotrzebne wskazniki
+		for (list<Pattern*>::iterator it=scene.begin() ; it != scene.end(); it++ )
+			(*it)->markerInfo = NULL;
+	}
 
     argSwapBuffers();
 }
