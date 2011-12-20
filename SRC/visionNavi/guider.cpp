@@ -64,6 +64,7 @@ bool Guider::update(const list<Pattern*> scene)
 	}
 
 	getDirection();
+	makeHint();
 
 	return 1;
 }
@@ -90,20 +91,24 @@ Direction Guider::getDirection()
 	return direction;
 }
 
-string Guider::getHint()
+void Guider::makeHint()
 {
 	ostringstream os;
 	os.precision(2);
 	os.setf(ios::fixed);
 	if (aimDistance > goalDistance)
 	{
+		_atAim = 0;
 		os << "znajdujesz sie w " << nearestNode->placeName << ", " << dictionary[direction] << ",\ndo celu pozostalo " << aimDistance << "m";
 		if (!path.empty())
 			os << ", do najblizszego punktu kontrolnego " << nextNodeDistance << "m";
 	}
 	else
+	{
+		_atAim = 1;
 		os << "Jestes u celu!";
-	return os.str();
+	}
+	hint = os.str();
 }
 
 string Guider::aimName()
