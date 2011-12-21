@@ -22,28 +22,23 @@ const char Guider::dictionary[8][32] =
 	"skrec mocno w prawo"
 };
 
-bool Guider::update(const list<Pattern*> scene)
+void Guider::update(const list<Pattern*> scene)
 {
 	// jesli znaleziono marker
 	if (!scene.empty())
 	{
-		Pattern* nearestPatTemp = NULL;
 		for (list<Pattern*>::const_iterator i=scene.begin(); i!=scene.end(); i++)
-			if (!nearestPatTemp || (*i)->transformation.getDistance() < nearestPatTemp->transformation.getDistance() )
-				nearestPatTemp = *i;
+			if (!nearestPattern || (*i)->transformation.getDistance() < nearestPattern->transformation.getDistance() )
+				nearestPattern = *i;
 
-		nearestPattern = nearestPatTemp;
-		nearestNode = nearestPatTemp->node;
+		nearestNode = nearestPattern->node;
 		
 		if (aim)
 			graph->getPath(nearestNode, aim, path);
 
 		TransMatrix node2marker = TransMatrix(nearestPattern->directionAngle,nearestPattern->distanceFromNode,nearestPattern->faceAngle);
-		//double node2markerAn = user2aim.getYAngle();
 		TransMatrix user2marker = nearestPattern->transformation;
-		//double user2markerAn = user2marker.getYAngle();
 		TransMatrix node2user = node2marker*user2marker.inverse();
-		//double node2userAn = user2aim.getYAngle();
 		TransMatrix node2aim; // domyslnie macierz jednostkowa
 		if (!path.empty())	// nie doszlismy do ostatniego wierzcholka
 			node2aim = TransMatrix(path.front()->direction, path.front()->cost, 0);
@@ -63,8 +58,6 @@ bool Guider::update(const list<Pattern*> scene)
 		if (!_atAim)
 			makeHint();
 	}
-
-	return 1;
 }
 
 Direction Guider::getDirection()

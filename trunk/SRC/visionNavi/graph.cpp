@@ -223,7 +223,7 @@ void Graph::getPath(Node* start, Node* stop, list<gConn*>& path)
 			}
 		}
 	}
-	
+
 	//Teraz rekonstrukcja sciezki
 	act = stop;
 	if(stop->prevNode != NULL)
@@ -235,13 +235,6 @@ void Graph::getPath(Node* start, Node* stop, list<gConn*>& path)
 			act = act->prevNode;
 		}
 	}
-
-	// algorytm tymczaowy
-	//while (currentNode!=stop)
-	//{
-	//	path.push_back(&currentNode->connections.back());
-	//	currentNode = path.back()->dest;
-	//}
 }
 
 ostream& operator<<(ostream &out, const Graph &g)

@@ -59,7 +59,7 @@ void ARToolKitWrapper::findMarkers()
 list<Pattern*> ARToolKitWrapper::getScene()
 {
 	std::list<Pattern*> scene; // Przechowuje wszystkie rozpoznane markery do zwrotu
-    // check for object visibility
+
 	for (list<Pattern*>::iterator pat = patternList->begin() ; pat != patternList->end(); pat++ )
 	{
 		for(int j = 0; j < marker_num; j++ )

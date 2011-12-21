@@ -130,7 +130,6 @@ static void init( int choice )
 	// -----------------------------------------
 
 	// inicjalizacja przechwytywania video -----
-	//cout << videoConfFile[choice - 1] << endl;
 	int error = ar.init(videoConfFile[choice - 1], &imageData, patterns);
 	if (error == 1)
 	{
@@ -189,7 +188,6 @@ static void mainLoop(void)
 	else
 	{
 		// górne pole informacyjne
-
 		string aim = guider->aimName();
 		ostringstream os;
 		if (!aim.empty())
@@ -201,31 +199,29 @@ static void mainLoop(void)
 		else
 			os	<< "Nacisnij Enter aby ustalic cel";
 		gl->printString(os.str(), -0.95, 1.0);
-	}
-	
 
-	// nic nie ma
-	if(!guider->aimName().empty())
-	{
-		if (!scene.empty())
+		if(!guider->aimName().empty())
 		{
-			//gl->draw3DScene(scene);
-			guider->update(scene);
-			if(!guider->atAim())
-				gl->drawArrow(guider->getAngle());
-		}
-		
-		// dolne pole informacyjne
-		string hint = guider->getHint();
-		if (!hint.empty())
-		{
-			gl->drawBackground(-0.97, -1.0, 1.93, 0.21);
-			gl->printString(hint, -0.95, -0.85);
-		}
+			if (!scene.empty())
+			{
+				//gl->draw3DScene(scene);
+				guider->update(scene);
+				if(!guider->atAim())
+					gl->drawArrow(guider->getAngle());
 
-		// usuwa niepotrzebne wskazniki
-		for (list<Pattern*>::iterator it=scene.begin() ; it != scene.end(); it++ )
-			(*it)->markerInfo = NULL;
+				// usuwa niepotrzebne wskazniki
+				for (list<Pattern*>::iterator it=scene.begin() ; it != scene.end(); it++ )
+					(*it)->markerInfo = NULL;
+			}
+			
+			// dolne pole informacyjne
+			string hint = guider->getHint();
+			if (!hint.empty())
+			{
+				gl->drawBackground(-0.97, -1.0, 1.93, 0.21);
+				gl->printString(hint, -0.95, -0.85);
+			}
+		}
 	}
 
     argSwapBuffers();
@@ -240,7 +236,7 @@ void keyEvent( unsigned char key, int x, int y)
 			userText.append(1, key);
 		else if (key == 8 && !userText.empty()) //backspace
 			userText.erase(--userText.end());
-		else if (key ==27)
+		else if (key ==27) // Enter
 		{
 			enterToMenu = 0;
 			userText.clear();
