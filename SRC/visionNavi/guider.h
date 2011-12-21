@@ -50,7 +50,7 @@ public:
 	 *
 	 *  @param scene Lista widocznych markerów z informacjami o nich
 	 */
-	bool update(list<Pattern*> scene);		// uaktualnia polozenie
+	void update(list<Pattern*> scene);		// uaktualnia polozenie
 
 	/** @brief zwraca wierzcho³ek, w ktorym znajduje siê u¿ytkownik*/
 	Node* findUs() { return nearestNode; }	// znajduje wierzcho³ek najbli¿szy lokalizacji
