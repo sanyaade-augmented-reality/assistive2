@@ -27,10 +27,12 @@ void Guider::update(const list<Pattern*> scene)
 	// jesli znaleziono marker
 	if (!scene.empty())
 	{
+		Pattern * nearestPatTemp = NULL;
 		for (list<Pattern*>::const_iterator i=scene.begin(); i!=scene.end(); i++)
-			if (!nearestPattern || (*i)->transformation.getDistance() < nearestPattern->transformation.getDistance() )
-				nearestPattern = *i;
+			if (!nearestPatTemp || (*i)->transformation.getDistance() < nearestPatTemp->transformation.getDistance() )
+				nearestPatTemp  = *i;
 
+		nearestPattern = nearestPatTemp;
 		nearestNode = nearestPattern->node;
 		
 		if (aim)

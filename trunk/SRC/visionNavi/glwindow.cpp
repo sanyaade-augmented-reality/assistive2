@@ -151,16 +151,17 @@ void GLWindow::drawArrow(double yAngle)
 	// transformacja przestrzeni --------------------------
 	
 	// os Y 30 w dol, Z - 180 do przodu
-	glTranslatef(0.0, 30.0, 180.0);
+	glTranslatef(0.0, 35.0, 180.0);
 	
 	// katy w stopniach
 	// lekkie nachylenie w gore (20 - os X)
-	glRotated(20.0, 1.0, 0.0, 0.0);
+	glRotated(10.0, 1.0, 0.0, 0.0);
 	glRotated(yAngle, 0.0, 1.0, 0.0);
 	glRotated(0.0, 0.0, 0.0, 1.0);
 
 	// ----------------------------------------------------
 		
+
 	// kolor, oswietlenie, material -----------------------
 
 	GLfloat   mat_ambient[]     = {0.0, 0.0, 1.0, 0.3};
@@ -186,64 +187,64 @@ void GLWindow::drawArrow(double yAngle)
 	glBegin(GL_QUADS);
 	{
 		// tyl
-		glVertex3f(-10.0, -7.0, -20.0);
-		glVertex3f(10.0, -7.0, -20.0);
-		glVertex3f(10.0, 7.0, -20.0);
-		glVertex3f(-10.0, 7.0, -20.0);
+		glVertex3f(-10.0, -4.0, -20.0);
+		glVertex3f(10.0, -4.0, -20.0);
+		glVertex3f(10.0, 4.0, -20.0);
+		glVertex3f(-10.0, 4.0, -20.0);
 
 		// lewa
-		glVertex3f(10.0, -7.0, 20.0);
-		glVertex3f(10.0, 7.0, 20.0);
-		glVertex3f(10.0, 7.0, -20.0);
-		glVertex3f(10.0, -7.0, -20.0);
+		glVertex3f(10.0, -4.0, 20.0);
+		glVertex3f(10.0, 4.0, 20.0);
+		glVertex3f(10.0, 4.0, -20.0);
+		glVertex3f(10.0, -4.0, -20.0);
 		// prawa
-		glVertex3f(-10.0, -7.0, 20.0);
-		glVertex3f(-10.0, 7.0, 20.0);
-		glVertex3f(-10.0, 7.0, -20.0);
-		glVertex3f(-10.0, -7.0, -20.0);
+		glVertex3f(-10.0, -4.0, 20.0);
+		glVertex3f(-10.0, 4.0, 20.0);
+		glVertex3f(-10.0, 4.0, -20.0);
+		glVertex3f(-10.0, -4.0, -20.0);
 		// dol
-		glVertex3f(-10.0, -7.0, 20.0);
-		glVertex3f(10.0, -7.0, 20.0);
-		glVertex3f(10.0, -7.0, -20.0);
-		glVertex3f(-10.0, -7.0, -20.0);
+		glVertex3f(-10.0, -4.0, 20.0);
+		glVertex3f(10.0, -4.0, 20.0);
+		glVertex3f(10.0, -4.0, -20.0);
+		glVertex3f(-10.0, -4.0, -20.0);
 		//gora
-		glVertex3f(-10.0, 7.0, 20.0);
-		glVertex3f(10.0, 7.0, 20.0);
-		glVertex3f(10.0, 7.0, -20.0);
-		glVertex3f(-10.0, 7.0, -20.0);
+		glVertex3f(-10.0, 4.0, 20.0);
+		glVertex3f(10.0, 4.0, 20.0);
+		glVertex3f(10.0, 4.0, -20.0);
+		glVertex3f(-10.0, 4.0, -20.0);
 		// grot - pionowe przednie
-		glVertex3f(0.0, 7.0, 35.0);
-		glVertex3f(20.0, 7.0, 20.0);
-		glVertex3f(20.0, -7.0, 20.0);
-		glVertex3f(0.0, -7.0, 35.0);
+		glVertex3f(0.0, 4.0, 35.0);
+		glVertex3f(20.0, 4.0, 20.0);
+		glVertex3f(20.0, -4.0, 20.0);
+		glVertex3f(0.0, -4.0, 35.0);
 		// cd
-		glVertex3f(0.0, 7.0, 35.0);
-		glVertex3f(-20.0, 7.0, 20.0);
-		glVertex3f(-20.0, -7.0, 20.0);
-		glVertex3f(0.0, -7.0, 35.0);
+		glVertex3f(0.0, 4.0, 35.0);
+		glVertex3f(-20.0, 4.0, 20.0);
+		glVertex3f(-20.0, -4.0, 20.0);
+		glVertex3f(0.0, -4.0, 35.0);
 		// grot - pionowe, tylnie
-		glVertex3f(10.0, 7.0, 20.0);
-		glVertex3f(20.0, 7.0, 20.0);
-		glVertex3f(20.0, -7.0, 20.0);
-		glVertex3f(10.0, -7.0, 20.0);
+		glVertex3f(10.0, 4.0, 20.0);
+		glVertex3f(20.0, 4.0, 20.0);
+		glVertex3f(20.0, -4.0, 20.0);
+		glVertex3f(10.0, -4.0, 20.0);
 
-		glVertex3f(-10.0, 7.0, 20.0);
-		glVertex3f(-20.0, 7.0, 20.0);
-		glVertex3f(-20.0, -7.0, 20.0);
-		glVertex3f(-10.0, -7.0, 20.0);
+		glVertex3f(-10.0, 4.0, 20.0);
+		glVertex3f(-20.0, 4.0, 20.0);
+		glVertex3f(-20.0, -4.0, 20.0);
+		glVertex3f(-10.0, -4.0, 20.0);
 	}
 	glEnd();
 
 	// gora i dol grotu
 	glBegin(GL_TRIANGLES);
 	{
-		glVertex3f(-20.0, -7.0, 20.0);
-		glVertex3f(20.0, -7.0, 20.0);
-		glVertex3f(0.0, -7.0, 35.0);
+		glVertex3f(-20.0, -4.0, 20.0);
+		glVertex3f(20.0, -4.0, 20.0);
+		glVertex3f(0.0, -4.0, 35.0);
 
-		glVertex3f(-20.0, 7.0, 20.0);
-		glVertex3f(20.0, 7.0, 20.0);
-		glVertex3f(0.0, 7.0, 35.0);
+		glVertex3f(-20.0, 4.0, 20.0);
+		glVertex3f(20.0, 4.0, 20.0);
+		glVertex3f(0.0, 4.0, 35.0);
 	}
 	glEnd();
 	// ---------------------------------------

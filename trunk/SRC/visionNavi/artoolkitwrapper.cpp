@@ -64,7 +64,7 @@ list<Pattern*> ARToolKitWrapper::getScene()
 	{
 		for(int j = 0; j < marker_num; j++ )
 			// sprawdza czy marker w polu j to ten, który ma sprawdzane teraz id
-			if(( (*pat)->id == markerInfo[j].id && markerInfo[j].cf > 0.6 ) && 
+			if(( (*pat)->id == markerInfo[j].id) && 
 				// i czy jeszcze nigdzie go nie dopasowano
 				// lub jeœli wczesniej dopasowano taki sam to sprawdza czy to dopasowanie nie jest lepsze
 				((*pat)->markerInfo == NULL || markerInfo[j].cf > (*pat)->markerInfo->cf))

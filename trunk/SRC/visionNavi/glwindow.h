@@ -67,6 +67,7 @@ public:
 	/** @brief Rysuje strza³kê
 	 *
 	 *  @param yAngle k¹t wzglêdem osi pionowej, który ma wskazywaæ z przedzia³u 0-360st, 0 - na wprost
+	 *  @param distance odleg³oœæ do celu
 	 */
 	void drawArrow(double yAngle);
 
