@@ -3,9 +3,9 @@
 
 /**
 * @file artoolkitwrapper.cpp
-* @brief metody klasy ARToolKitWrapper
+* @brief methods of ARToolKitWrapper class
 *
-* @author Kamil Neczaj, Ernest Staszuk
+* @author Kamil Neczaj
 *
 * @date 9.12.2011
 */
@@ -24,11 +24,11 @@ int ARToolKitWrapper::init(string &sVideoConfFile, ARUint8** imageData, list<Pat
 	videoConfFile = new char[sVideoConfFile.size()];
 	videoConfFile = (char *)sVideoConfFile.c_str();
 
-	// Otwiera strumien wideo
+	// open video stream
 	if( arVideoOpen( videoConfFile ) < 0 )
 		return 1;
 
-    // Ustawia rozdzielczosc strumienia
+    // set resolution
     if( arVideoInqSize(&xSize, &ySize) < 0 )
 		return 2;
 
@@ -58,27 +58,27 @@ void ARToolKitWrapper::findMarkers()
 
 list<Pattern*> ARToolKitWrapper::getScene()
 {
-	std::list<Pattern*> scene; // Przechowuje wszystkie rozpoznane markery do zwrotu
+	std::list<Pattern*> scene; // stores all recognized markers at the view
 
 	for (list<Pattern*>::iterator pat = patternList->begin() ; pat != patternList->end(); pat++ )
 	{
 		for(int j = 0; j < marker_num; j++ )
-			// sprawdza czy marker w polu j to ten, który ma sprawdzane teraz id
+			// checks whether the j-th marker is the one which id is checked
 			if(( (*pat)->id == markerInfo[j].id) && 
-				// i czy jeszcze nigdzie go nie dopasowano
-				// lub jeœli wczesniej dopasowano taki sam to sprawdza czy to dopasowanie nie jest lepsze
+				// and it has not been assigned yet
+				// or it has been assigned before, so check whether this assignment is better
 				((*pat)->markerInfo == NULL || markerInfo[j].cf > (*pat)->markerInfo->cf))
 			{
 				(*pat)->markerInfo = &markerInfo[j];
 				(*pat)->matchProbability = markerInfo[j].cf;
 			}
 	
-		// znaleziono wzor, wiec dodaj do sceny - do narysowania
+		// a pattern was found so add to the scene
 		if ((*pat)->markerInfo)
 		{
-			// dodaje wzor
+			// adds pattern
 			scene.push_back(*pat);
-			// liczy transformacje pomiedzy markerem a kamera
+			// computes the transformation between the pattern and the camera
 			arGetTransMat(scene.back()->markerInfo, scene.back()->center, scene.back()->width, scene.back()->transformation.m);
 		}
 	}

@@ -3,28 +3,28 @@
 
 /**
 * @file guider.cpp
-* @brief metody klasy Guider
+* @brief methods of Guider class
 *
-* @author Kamil Neczaj, Ernest Staszuk
+* @author Kamil Neczaj
 *
 * @date 9.12.2011
 */
 
 const char Guider::dictionary[8][32] = 
 {
-	"zawroc",
-	"skrec mocno w lewo",
-	"skrec w lewo", 
-	"skrec lekko w lewo",
-	"idz prosto",
-	"skrec lekko w prawo",
-	"skrec w prawo",
-	"skrec mocno w prawo"
+	"turn back",
+	"turn left tightly",
+	"turn left", 
+	"turn left slightly",
+	"go forward",
+	"turn right	slightly",
+	"turn right",
+	"turn right tightly"
 };
 
 void Guider::update(const list<Pattern*> scene)
 {
-	// jesli znaleziono marker
+	// if any pattern was found
 	if (!scene.empty())
 	{
 		Pattern * nearestPatTemp = NULL;
@@ -41,8 +41,8 @@ void Guider::update(const list<Pattern*> scene)
 		TransMatrix node2marker = TransMatrix(nearestPattern->directionAngle,nearestPattern->distanceFromNode,nearestPattern->faceAngle);
 		TransMatrix user2marker = nearestPattern->transformation;
 		TransMatrix node2user = node2marker*user2marker.inverse();
-		TransMatrix node2aim; // domyslnie macierz jednostkowa
-		if (!path.empty())	// nie doszlismy do ostatniego wierzcholka
+		TransMatrix node2aim; // by default identity matrix
+		if (!path.empty())	// the last vertex has not been reached
 			node2aim = TransMatrix(path.front()->direction, path.front()->cost, 0);
 		
 		user2aim = node2user.inverse()*node2aim;
@@ -52,7 +52,9 @@ void Guider::update(const list<Pattern*> scene)
 		aimDistance = nextNodeDistance;
 		for (list<gConn*>::iterator i=path.begin(); i != path.end(); i++)
 		{
-			if (i != path.begin()) // dla pierwszego wierzcholka mamy koszt wyliczony z macierzy przejscia
+			// for the first node, there is a cost computed from user2aim matrix 
+			// (matrix of conversion the current position to the position of the next node)
+			if (i != path.begin())
 				aimDistance += (*i)->cost;
 		}
 
@@ -64,7 +66,7 @@ void Guider::update(const list<Pattern*> scene)
 
 Direction Guider::getDirection()
 {
-	// kat w stopniach 0-360
+	// angle in degrees 0-360
 	if (180.0-45.0*0.5 < angle && angle < 180.0 + 45.0*0.5)
 		direction =  TURNAROUND;
 	else if (180.0 + 45.0*0.5 < angle && angle < 180.0 + 45.0*1.5)
@@ -85,20 +87,21 @@ Direction Guider::getDirection()
 }
 
 void Guider::makeHint()
+	// text hint
 {
 	ostringstream os;
 	os.precision(2);
 	os.setf(ios::fixed);
 	if (aimDistance > aimAchivedDist)
 	{
-		os << "znajdujesz sie w " << nearestNode->placeName << ", " << dictionary[direction] << ",\ndo celu pozostalo " << aimDistance << "m";
+		os << "you are in " << nearestNode->placeName << ", " << dictionary[direction] << ",\nthere is " << aimDistance << "m left to the aim";
 		if (!path.empty())
-			os << ", do najblizszego punktu kontrolnego " << nextNodeDistance << "m";
+			os << ", " << nextNodeDistance << "m left to the nearest pass point";
 	}
 	else
 	{
 		_atAim = 1;
-		os << "Jestes u celu!";
+		os << "You have reached the aim!";
 	}
 	hint = os.str();
 }

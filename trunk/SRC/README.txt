@@ -1,4 +1,4 @@
-Copyright (C) 2011 Ernest Staszuk, Kamil Neczaj
+Copyright (C) 2011 Kamil Neczaj, Ernest Staszuk
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of
 this software and associated documentation files (the "Software"), to deal in
@@ -16,3 +16,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 PLEASE ALSO BE AWARE THAT PARTS OF THIS SOFTWARE (ARToolKit and GLut) ARE PROVIDED BY 3rd PART ON DIFFERENT LICENSING AGREEMENTS.
+
+------------------------------------------------------------------------------------
+
+If you compile visionNavi from source, you should copy all files from EXE dir to SRC/visionNavi/RunEnv.
+There are some libs, data files and demo clips.

@@ -23,54 +23,54 @@ using namespace std;
 /**
 * @class ARToolKitWrapper
 *
-* @brief Klasa zajmuj¹ca siê przetwarzaniem obrazu za pomoc¹ ARToolkit
+* @brief class responsible for image processing using ARToolkit
 *
 */ 
 class ARToolKitWrapper
 {
 public:
-	/** @brief konstruktor*/
+	/** @brief constructor*/
 	ARToolKitWrapper() : threshold(100) {};
-	/** @brief destruktor*/
+	/** @brief destructor*/
 	~ARToolKitWrapper();
 
-	/** @brief funkcja inicjalizuj¹ca ARToolkita
+	/** @brief ARToolkit initialization
 	 *
-	 *  @param videoConfFile nazwa pliku konfiguracji urz¹dzenia wejœciowego
-	 *  @param imageData wskaŸnik na wskaŸnik danych obrazu
-	 *  @param patternList wskaŸnik na listê markerów
+	 *  @param videoConfFile file with input device configuration
+	 *  @param imageData pointer to pointer of image data
+	 *  @param patternList pointer to pattern list
 	 */
 	int init(string &videoConfFile, ARUint8** imageData, list<Pattern*>* patternList);
 
-	/** @brief pobierz now¹ klatkê z urz¹dzenia*/
+	/** @brief get new frame*/
 	bool grabFrame();
 
-	/** @brief znajdŸ markery na klatce*/
+	/** @brief find patterns on the loaded frame*/
 	void findMarkers();
 
-	/** @brief dopasuj znalezione wzory do wzorów wczytanych do programu*/
+	/** @brief assign patterns from frame to loaded patterns*/
 	list<Pattern*> getScene();
 
-	/** @brief numer przetwarzanej ramki*/
+	/** @brief frame number*/
 	int getFrameNumber() { return frameNumber; }
 
-	/** @brief rozmiar poziomy obrazu z kamery*/
+	/** @brief horizontal size of the image from video recorder*/
 	int getSizeX() { return xSize; }
 
-	/** @brief rozmiar pionowy obrazu z kamery*/
+	/** @brief vertical size of the image from video recorder*/
 	int getSizeY() { return ySize; }
 
 private:
-	ARUint8**       imageData;		/**< obraz */
-    ARMarkerInfo*   markerInfo;		/**< informacje o wykrytych markerach */
-    int             marker_num;		/**< iloœæ markerów w ramce */
-	int             frameNumber;	/**< nr ramki */
-	int				xSize;			/**< rozmiary obrazu */
+	ARUint8**       imageData;		/**< image */
+    ARMarkerInfo*   markerInfo;		/**< info about recognized patterns */
+    int             marker_num;		/**< no of patterns on the frame */
+	int             frameNumber;	/**< frame no */
+	int				xSize;			/**< image size */
 	int				ySize;
-	char*			videoConfFile;	/**< konfiguracja kamery */
-	char*			cameraCalibFile;/**< plik kalibracji kamery */
-	list<Pattern *>* patternList;	/**< lista markerow do wykrywania */
-	int				threshold;		/**< prog */
+	char*			videoConfFile;	/**< video rec configuration */
+	char*			cameraCalibFile;/**< calibration file */
+	list<Pattern *>* patternList;	/**< available pattern list */
+	int				threshold;		/**< treshold */
 };
 
 #endif //ARTOOLKITWRAPPER_H

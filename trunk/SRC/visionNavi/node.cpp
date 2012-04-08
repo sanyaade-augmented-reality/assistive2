@@ -10,6 +10,7 @@
 #include "node.h"
 
 Pattern* Node::addPattern(string filename, double distance, double directionAngle, double faceAngle)
+	// author Kamil Neczaj
 {
 	Pattern *pattern = new Pattern(filename+"\0", this, static_cast<float>(distance), 
 		static_cast<float>(directionAngle), static_cast<float>(faceAngle));
@@ -23,11 +24,13 @@ Pattern* Node::addPattern(string filename, double distance, double directionAngl
 }
 
 ostream& operator<<(ostream &out, const Node &n)
+	// author Kamil Neczaj
 {
 	out << n.id << ". " << n.placeName;
 	return out;
 }
 
 bool relacja(Node * lhs, Node * rhs){
+	// author Ernest Staszuk
 	return lhs->pathCost < rhs->pathCost;
 }

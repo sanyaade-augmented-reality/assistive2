@@ -9,9 +9,9 @@
 
 /**
 * @file glwindow.cpp
-* @brief metody klasy GLWindow
+* @brief methods of GLWindow class
 *
-* @author Kamil Neczaj, Ernest Staszuk
+* @author Kamil Neczaj
 *
 * @date 9.12.2011
 */
@@ -33,61 +33,13 @@ void GLWindow::init(ARUint8** imageData, ARParam &cameraParam, int xSize, int yS
 	this->xSize = xSize;
 	this->ySize = ySize;
 	// open the graphics window
-    argInit( &cameraParam, 1.0, 0, 0, 0, 0 ); // byc moze jest koniecznosc pisania do cameraParam
+    argInit( &cameraParam, 1.0, 0, 0, 0, 0 );
 }
 
 void GLWindow::drawVideo()
 {
 	argDrawMode2D();
     argDispImage(*imageData, 0,0 );
-}
-
-void GLWindow::draw3DScene( list<Pattern*> &scene )
-{
-	double gl_para[16];
-    
-    argDrawMode3D();
-    argDraw3dCamera(0, 0);
-    glClearDepth(1.0);
-    glClear(GL_DEPTH_BUFFER_BIT);
-    glEnable(GL_DEPTH_TEST);
-    glDepthFunc(GL_LEQUAL);
-    
-	for (list<Pattern*>::iterator it=scene.begin() ; it != scene.end(); it++ )
-	{	
-		// load the camera transformation matrix
-		argConvGlpara((*it)->transformation.m, gl_para);
-		glMatrixMode(GL_MODELVIEW);
-		glLoadMatrixd(gl_para);
-		
-		// kolor, oswietlenie, material --------------------------------
-
-		GLfloat   mat_ambient[]     = {0.0, 0.0, 1.0, 1.0};
-		GLfloat   mat_flash[]       = {0.0, 0.0, 1.0, 1.0};
-		GLfloat   mat_flash_shiny[] = {50.0};
-		GLfloat   light_position[]  = {100.0,-200.0,200.0,0.0};
-		GLfloat   ambi[]            = {0.1, 0.5, 0.1, 0.1};
-		GLfloat   lightZeroColor[]  = {0.9, 0.9, 0.9, 0.1};
-
-		glEnable(GL_LIGHTING);
-		glEnable(GL_LIGHT0);
-
-		glLightfv(GL_LIGHT0, GL_POSITION, light_position);
-		glLightfv(GL_LIGHT0, GL_AMBIENT, ambi);
-		glLightfv(GL_LIGHT0, GL_DIFFUSE, lightZeroColor);
-		glMaterialfv(GL_FRONT, GL_SPECULAR, mat_flash);
-		glMaterialfv(GL_FRONT, GL_SHININESS, mat_flash_shiny);	
-		glMaterialfv(GL_FRONT, GL_AMBIENT, mat_ambient);
-		// -------------------------------------------------------------
-
-		glMatrixMode(GL_MODELVIEW);
-		glTranslatef( 0.0, 0.0, 25.0 );
-		glutSolidCube(100.0);
-		glDisable( GL_LIGHTING );
-		glTranslatef( 0.0, 0.0, -25.0 );
-
-		glDisable( GL_DEPTH_TEST );
-	}
 }
 
 void GLWindow::printString(string str, float x, float y)
@@ -97,7 +49,7 @@ void GLWindow::printString(string str, float x, float y)
   glMatrixMode(GL_PROJECTION);
   glLoadIdentity();
 
-  // pozycja
+  // position
   glTranslatef(x, y-28.0/(float)ySize, 0.0);
 
   // text
@@ -120,10 +72,10 @@ void GLWindow::drawBackground(float startX, float startY, float sizeX, float siz
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 
-	// pozycja
+	// position
 	glTranslatef(startX, startY, 0.0);
 
-	// tlo
+	// background
 	glColor3f(1.0, 1.0, 1.0);
 	glBegin(GL_POLYGON);
 	{
@@ -144,17 +96,17 @@ void GLWindow::drawArrow(double yAngle)
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LEQUAL);
 		
-	// laduje macierz jednostkowa
+	// loads an identity matrix
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity ();
 
-	// transformacja przestrzeni --------------------------
+	// space transformation --------------------------
 	
-	// os Y 30 w dol, Z - 180 do przodu
+	// axis Y 35 deg down, Z - 180 forward
 	glTranslatef(0.0, 35.0, 180.0);
 	
-	// katy w stopniach
-	// lekkie nachylenie w gore (20 - os X)
+	// angles in degrees
+	// slightly to up (10 deg - X axis)
 	glRotated(10.0, 1.0, 0.0, 0.0);
 	glRotated(yAngle, 0.0, 1.0, 0.0);
 	glRotated(0.0, 0.0, 0.0, 1.0);
@@ -162,7 +114,7 @@ void GLWindow::drawArrow(double yAngle)
 	// ----------------------------------------------------
 		
 
-	// kolor, oswietlenie, material -----------------------
+	// color, lightnings, material -----------------------
 
 	GLfloat   mat_ambient[]     = {0.0, 0.0, 1.0, 0.3};
 	GLfloat   mat_flash[]       = {0.0, 5.0, 5.0, 1.0};
@@ -186,43 +138,43 @@ void GLWindow::drawArrow(double yAngle)
 	// korpus strza³ki
 	glBegin(GL_QUADS);
 	{
-		// tyl
+		// back
 		glVertex3f(-10.0, -4.0, -20.0);
 		glVertex3f(10.0, -4.0, -20.0);
 		glVertex3f(10.0, 4.0, -20.0);
 		glVertex3f(-10.0, 4.0, -20.0);
 
-		// lewa
+		// left
 		glVertex3f(10.0, -4.0, 20.0);
 		glVertex3f(10.0, 4.0, 20.0);
 		glVertex3f(10.0, 4.0, -20.0);
 		glVertex3f(10.0, -4.0, -20.0);
-		// prawa
+		// right
 		glVertex3f(-10.0, -4.0, 20.0);
 		glVertex3f(-10.0, 4.0, 20.0);
 		glVertex3f(-10.0, 4.0, -20.0);
 		glVertex3f(-10.0, -4.0, -20.0);
-		// dol
+		// bottom
 		glVertex3f(-10.0, -4.0, 20.0);
 		glVertex3f(10.0, -4.0, 20.0);
 		glVertex3f(10.0, -4.0, -20.0);
 		glVertex3f(-10.0, -4.0, -20.0);
-		//gora
+		// top
 		glVertex3f(-10.0, 4.0, 20.0);
 		glVertex3f(10.0, 4.0, 20.0);
 		glVertex3f(10.0, 4.0, -20.0);
 		glVertex3f(-10.0, 4.0, -20.0);
-		// grot - pionowe przednie
+		// arrowhead - vertical front
 		glVertex3f(0.0, 4.0, 35.0);
 		glVertex3f(20.0, 4.0, 20.0);
 		glVertex3f(20.0, -4.0, 20.0);
 		glVertex3f(0.0, -4.0, 35.0);
-		// cd
+		
 		glVertex3f(0.0, 4.0, 35.0);
 		glVertex3f(-20.0, 4.0, 20.0);
 		glVertex3f(-20.0, -4.0, 20.0);
 		glVertex3f(0.0, -4.0, 35.0);
-		// grot - pionowe, tylnie
+		// arrowhead - vertical back
 		glVertex3f(10.0, 4.0, 20.0);
 		glVertex3f(20.0, 4.0, 20.0);
 		glVertex3f(20.0, -4.0, 20.0);
@@ -235,7 +187,7 @@ void GLWindow::drawArrow(double yAngle)
 	}
 	glEnd();
 
-	// gora i dol grotu
+	// the top and the bottom of the arrowhead
 	glBegin(GL_TRIANGLES);
 	{
 		glVertex3f(-20.0, -4.0, 20.0);
