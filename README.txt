@@ -19,5 +19,9 @@ PLEASE ALSO BE AWARE THAT PARTS OF THIS SOFTWARE (ARToolKit and GLut) ARE PROVID
 
 ------------------------------------------------------------------------------------
 
-If you compile visionNavi from source, you should copy all files from EXE dir to SRC/visionNavi/RunEnv.
-There are some libs, data files and demo clips.
+Assistive2 requires ARToolkit to build and run.
+
+Although the project is in Visual Studio format, it should be possible to compile it
+on Linux making a new Makefile project.
+
+utls directory is a part of ARToolkit
