@@ -29,8 +29,7 @@ Pattern::Pattern(std::string filename, Node* node, float distanceFromNode, float
 }
 
 bool Pattern::init(std::string filename, Node* node, float distanceFromNode, float directionAngle, float faceAngle )
-	// faceAngle = -1.0 to automatyczny k¹t, bêdzie ok, gdy marker jest powieszony na œcianie w pomieszczeniu prostokatnym
-	// ze œcianami równolegle i prostopadle do kierunku N
+	// faceAngle = -1.0 -> automatic face angle (works in common situaltions)
 {
 	if( (id = arLoadPatt(filename.c_str()) ) < 0 || !(directionAngle >= 0 && directionAngle < 360) || !((faceAngle >= 0 && faceAngle < 360) || faceAngle == -1.0) )
 		initialized = 0;
@@ -50,8 +49,8 @@ bool Pattern::init(std::string filename, Node* node, float distanceFromNode, flo
 }
 
 void Pattern::autoFaceAngle()
-	// automatyczny k¹t, bêdzie ok, gdy marker jest powieszony na œcianie w pomieszczeniu prostokatnym
-	// ze œcianami równolegle i prostopadle do kierunku N
+	// automatic face angle - ok when a pattern sheet is hung on a wall in rectangular room
+	// with walls parallel and ortogonal to N direction
 {
 	float tempAngle = directionAngle + 45;
 	int i = (int)floor( mod(tempAngle,360) /90);

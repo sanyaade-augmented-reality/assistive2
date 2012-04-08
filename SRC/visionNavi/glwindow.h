@@ -26,10 +26,10 @@ using namespace std;
 class GLWindow
 {
 public:
-	/* @brief destruktor */
+	/* @brief destructor */
 	~GLWindow(void);
 
-	/** @brief Funkcja inicjalizujπca
+	/** @brief initializing function
 	 *
 	 *  @param imageData wskaünik na wskaünik z przechwyconym obrazem
 	 *  @param cameraParam parametry kalibracji kamery

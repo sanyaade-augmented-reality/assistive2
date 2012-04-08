@@ -19,6 +19,15 @@
 #include "guider.h"
 #include "pattern.h"
 
+/**
+* @file main.cpp
+* @brief main functions
+*
+* @author Kamil Neczaj, Ernest Staszuk
+*
+* @date 9.12.2011
+*/
+
 using namespace std;
 
 int preChoice = -1;
@@ -49,16 +58,26 @@ string	patt_name[2];
 Graph				graph;
 ARToolKitWrapper	ar;
 Guider*				guider;
-ARUint8*			imageData; // obraz
+ARUint8*			imageData; // image
 GLWindow*			gl;
 
-// zmienne menu
+// There was an idea to convert these functions to a class,
+// but it was decided that it is only the art for art's sake.
+// The idea of such a class would not be coherent, because
+// the functions below make many different, not related, general things.
+
+// Global vars are ugly, I know, but I cannot change list of arguments of
+// mainLoop and keyEvent (this form is demanded by ARToolkit)
+// so it is the only way for the functions to comunicate.
+// The only way to get rid of global functions would be making a class.
+
+// menu variables
 int				page = 0;
 string			userText;
 bool			enterToMenu = 1;
 bool			confirmed = 0;
 int				maxPage;
-bool			constrErr = 0; // b³¹d wartoœci z poza zakresu wierzcho³ków
+bool			constrErr = 0; // node beyond the range
 
 static void   init( int choice );
 static void   keyEvent( unsigned char key, int x, int y);
@@ -67,18 +86,18 @@ void menu();
 void menuGL();
 
 int main(int argc, char **argv)
+	// author Ernest Staszuk
 {
-	// Do sprawdzenia czy potrzebne pliki istniej¹:
 	fstream fin;
 	bool fileExist = false;
 	// Menu:
 	int choice = 0;
 	do {
 		cout << "==============================" << endl
-			<<  "Witamy w programie Assistive 2" << endl
+			<<  "    Welcome in Assistive 2" << endl
 			<<  "==============================" << endl << endl
-			<<  "Prosze wybrac tryb pracy:" << endl
-			<<  "   1. Przechwytywanie obrazu z kamery." << endl
+			<<  "Please choose the mode" << endl
+			<<  "   1. Work with image captured from a camera." << endl
 			<<  "   2. Demo 1 - Toilets." << endl
 			<<  "   3. Demo 2 - Room 103." << endl
 			<<  "   4. Demo 3 - Room 103 II." << endl
@@ -100,7 +119,7 @@ int main(int argc, char **argv)
 			}
 			else
 			{
-				cout << "Blad: Plik "<< demoFiles[choice - 2] << " nie istnieje!" << endl;
+				cout << "Error: File "<< demoFiles[choice - 2] << " does not exist!" << endl;
 				fileExist = false;
 			}
 		}
@@ -117,38 +136,39 @@ int main(int argc, char **argv)
 }
 
 static void init( int choice )
+	// author Kamil Neczaj
 {
 	gl = GLWindow::instance();
-	// tworzenie grafu po³¹czeñ ----------------
+	// making graph connections ----------------
 	list<Pattern*> *patterns = graph.init();
 	if (!patterns)
 	{
-		cout << "Nie udalo sie wczytac markerow.\n";
+		cout << "Markers cannot be loaded.\n";
 		delete patterns;
 		exit(4);
 	}
 	// -----------------------------------------
 
-	// inicjalizacja przechwytywania video -----
+	// video capture initialization -----
 	int error = ar.init(videoConfFile[choice - 1], &imageData, patterns);
 	if (error == 1)
 	{
-		cout << "Nie mozna otworzyc pliku konfiguracyjnego: " << videoConfFile[choice - 1] << endl;
+		cout << "Configure file cannot be opened: " << videoConfFile[choice - 1] << endl;
 		exit(1);
 	}
 	else if (error==2) // 2
 	{
-		cout << "Blad inicjalizacji obrazu" << endl;
+		cout << "Image initialization error" << endl;
 		exit(2);
 	}
 	//------------------------------------------
 
-	// kalibracja kamery -----------------------
-	ARParam	rawCamParam;	// kalibracja wczytana z pliku
-	ARParam	cameraParam;	// kalibracja z uwzgledniona wielkoscia obrazu
+	// camera calibration -----------------------
+	ARParam	rawCamParam;	// raw calibration from file
+	ARParam	cameraParam;	// calibration taking into consideration image resolution
     if( arParamLoad(cameraCalibFile, 1, &rawCamParam) < 0 )
 	{
-		cout << "Nie mozna otworzyc pliku: " << cameraCalibFile << endl;
+		cout << "File cannot be opened: " << cameraCalibFile << endl;
 		exit(3);
 	}
 	arParamChangeSize( &rawCamParam, ar.getSizeX(), ar.getSizeY(), &cameraParam );
@@ -172,12 +192,13 @@ static void init( int choice )
 }
 
 static void mainLoop(void)
+	// author Kamil Neczaj
 {
 	GLWindow* gl = GLWindow::instance();
 	list<Pattern*> scene;
     
 	if(!ar.grabFrame())
-		return; //nie udalo sie
+		return; // fail, not all mainLoop excutions manage to grab image
 	ar.findMarkers();
     arVideoCapNext();
 	gl->drawVideo();
@@ -187,34 +208,33 @@ static void mainLoop(void)
 		menuGL();
 	else
 	{
-		// górne pole informacyjne
+		// top information field
 		string aim = guider->aimName();
 		ostringstream os;
 		if (!aim.empty())
 		{
 			gl->drawBackground(-0.97, 0.9, 1.93, 0.1);
-			os << "Nawigacja do " << aim << ". ";
-			os	<< "Nacisnij Enter aby zmienic cel";
+			os << "Aim: " << aim << ". ";
+			os	<< "Press Enter to change the aim";
 		}
 		else
-			os	<< "Nacisnij Enter aby ustalic cel";
+			os	<< "Press Enter to set the aim";
 		gl->printString(os.str(), -0.95, 1.0);
 
 		if(!guider->aimName().empty())
 		{
 			if (!scene.empty())
 			{
-				//gl->draw3DScene(scene);
 				guider->update(scene);
 				if(!guider->atAim())
 					gl->drawArrow(guider->getAngle());
 
-				// usuwa niepotrzebne wskazniki
+				// get rid of unused pointer
 				for (list<Pattern*>::iterator it=scene.begin() ; it != scene.end(); it++ )
 					(*it)->markerInfo = NULL;
 			}
 			
-			// dolne pole informacyjne
+			// bottom information field
 			string hint = guider->getHint();
 			if (!hint.empty())
 			{
@@ -228,11 +248,12 @@ static void mainLoop(void)
 }
 
 void keyEvent( unsigned char key, int x, int y)
+	// author Kamil Neczaj
 {
-    // ESC - wyjscie
+    // ESC - quit
 	if(enterToMenu)
 	{
-		if (key >= '0' && key <= '9') // sprawdza czy u¿ytkownik wpisa³ cyfrê
+		if (key >= '0' && key <= '9') // checks if the user typed a figure
 			userText.append(1, key);
 		else if (key == 8 && !userText.empty()) //backspace
 			userText.erase(--userText.end());
@@ -243,7 +264,7 @@ void keyEvent( unsigned char key, int x, int y)
 		}
 		else if ( key == 13)
 			confirmed = 1;
-		// obsluga duzej liczby wierzcholkow
+		// support of large node list divided to pages
 		else if (key == GLUT_KEY_LEFT)
 		{
 			if (page>0) 
@@ -260,19 +281,20 @@ void keyEvent( unsigned char key, int x, int y)
 		if( key == 27 )
 			exit(0);
 		else if (key == 13)// Enter
-			enterToMenu = 1; // nowy cel
+			enterToMenu = 1; // new aim
 	}
 }
 
 void menuGL()
+	// author Kamil Neczaj
 {
 	int pointsNumber = graph.nodeList.size();
 	int linesNumber = floor((float)ar.getSizeY()-14.0)/16.0 - 1; // ilosc punktow ktore sie zmieszcza
 	maxPage = ceil((float)pointsNumber/(float)linesNumber);
 	Node** nodeT = new Node*[pointsNumber];
-	string str = "Dostepne punkty: ";
+	string str = "Available points: ";
 	if (maxPage>1)
-		str = str + "<- poprz. str, nast. strona ->";
+		str = str + "<- prev. page, next page ->";
 	str += "\n";
 	
 	int t=0;
@@ -290,7 +312,7 @@ void menuGL()
 	gl->printString((char*)str.c_str(), -1.0, 1.0);
 	
 	ostringstream ss;
-	ss << "Wybierz punkt docelowy";
+	ss << "Choose the aim";
 
 	if (confirmed)
 	{
@@ -314,7 +336,7 @@ void menuGL()
 	}
 
 	if (constrErr)
-		ss << "(Za duza wartosc!) ";
+		ss << "(Too large value!) ";
 
 	ss << ": " << userText;
 

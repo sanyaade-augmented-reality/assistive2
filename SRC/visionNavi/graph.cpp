@@ -7,7 +7,7 @@
 
 /**
 * @file graph.cpp
-* @brief metody klasy Graph
+* @brief methods of Graph class
 *
 * @author Kamil Neczaj, Ernest Staszuk
 *
@@ -16,17 +16,18 @@
 
 using namespace std;
 
-// Do konwersji string na liczby
+// For string na figure conversion
 template <class T>
 	bool from_string(T& t, const std::string& s, std::ios_base& (*f)(std::ios_base&))
+		// author Ernest Staszuk
 	{
 		std::istringstream iss(s);
 		return !(iss >> f >> t).fail();
 	}
 
 std::list<Pattern*>* Graph::init()
-	// wcztywanie danych - tu powinno siê znaleŸæ wczytywanie danych z pliku,
-	// którego nazwa bêdzie podana jako argument tej funkcji
+	// data loading
+	// author Ernest Staszuk
 {
 	string buf;
 	ifstream file("Data\\mapa.graph");
@@ -51,8 +52,8 @@ std::list<Pattern*>* Graph::init()
 	}
 
 	//Loading number of nodes
-		while(getline(file, buf) && !buf.compare(0,1,"#"));
-		from_string<int>(numberOfNodes, buf, std::dec);
+	while(getline(file, buf) && !buf.compare(0,1,"#"));
+	from_string<int>(numberOfNodes, buf, std::dec);
 		
 	while(getline(file, buf) && !buf.compare(0,1,"#"));
 
@@ -153,6 +154,7 @@ std::list<Pattern*>* Graph::init()
 }
 
 bool Graph::addConnection(Node* a, Node* b, float distance, int directionAB)
+	// author Kamil Neczaj
 {
 	if (!a || !b || directionAB < 0 || directionAB >= 360)
 		return 0;
@@ -162,6 +164,7 @@ bool Graph::addConnection(Node* a, Node* b, float distance, int directionAB)
 }
 
 Node* Graph::searchFor(int id)
+	// author Kamil Neczaj
 {
     for (list<Node*>::iterator i=nodeList.begin(); i != nodeList.end(); i++)
         if ((*i)->id == id)
@@ -170,14 +173,16 @@ Node* Graph::searchFor(int id)
 }
 
 Node* Graph::addNode(string placeName)
+	// author Kamil Neczaj
 {
 	Node *node = new Node(nodeList.size(), placeName);
 	nodeList.push_back(node);
 	return node;
 }
 
-	// zwracanie wyniku przez referencje path
 void Graph::getPath(Node* start, Node* stop, list<gConn*>& path)
+	// return of the result using path reference
+	// author Ernest Staszuk
 {
 	Node* act;
 	Node* next;
@@ -224,11 +229,11 @@ void Graph::getPath(Node* start, Node* stop, list<gConn*>& path)
 		}
 	}
 
-	//Teraz rekonstrukcja sciezki
+	// path reconstruction now
 	act = stop;
 	if(stop->prevNode != NULL)
 	{
-		//znaleziono sciezke
+		// path found
 		while(act != start)
 		{
 			path.push_front(act->prevConn);
